@@ -21,7 +21,7 @@ BLACK= (0, 0, 0)
 WHITE = (245, 235, 216) #(255, 255, 255)
 SAND= 1
 
-simulation_speed = 2
+simulation_speed = 3
 frame_count = 0
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -90,7 +90,7 @@ while running:
 
     for row in range(ROWS):
         for col in range(COLS):
-            if grid[row][col] == 1:
+            if grid[row][col] == SAND:
                 pygame.draw.rect(screen, WHITE, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE))
 
     pygame.display.update()
