@@ -21,6 +21,9 @@ BLACK= (0, 0, 0)
 WHITE = (245, 235, 216) #(255, 255, 255)
 SAND= 1
 
+simulation_speed = 2
+frame_count = 0
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Sandbox Game")
@@ -42,6 +45,7 @@ running = True
 while running:
 
     clock.tick(60)
+    frame_count += 1
 
     # EVENTS
     for event in pygame.event.get():
@@ -65,19 +69,21 @@ while running:
             grid[grid_y][grid_x] = 0
 
     # SAND SIMULATION
-    for row in range(ROWS - 2, -1, -1):
-        for col in range(COLS):
-            if grid[row][col]== SAND:
-                if grid[row +1][col]==0:
-                    grid[row][col]=0
-                    grid[row +1][col]= SAND
-                else:
-                    direction = random.choice([-1, 1])
-                    new_col = col + direction
-                    if 0 <= new_col < COLS and grid[row +1][new_col]==0:
+
+    if frame_count % simulation_speed == 0:
+        for row in range(ROWS - 2, -1, -1):
+            for col in range(COLS):
+                if grid[row][col]== SAND:
+                    if grid[row +1][col]==0:
                         grid[row][col]=0
-                        grid[row +1][new_col]= SAND
-                
+                        grid[row +1][col]= SAND
+                    else:
+                        direction = random.choice([-1, 1])
+                        new_col = col + direction
+                        if 0 <= new_col < COLS and grid[row +1][new_col]==0:
+                            grid[row][col]=0
+                            grid[row +1][new_col]= SAND
+                    
 
     # RENDER
     screen.fill((30, 30, 80))
