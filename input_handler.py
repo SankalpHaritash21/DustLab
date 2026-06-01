@@ -67,8 +67,12 @@ def handle_input(grid, current_element, brush_size, simulation_speed):
                         0 <= new_x < COLS
                         and 0 <= new_y < ROWS
                     ):
-
-                        grid[new_y][new_x] = create_cell(current_element)
+                        if current_element == LAVA:
+                            grid[new_y][new_x] = create_cell(current_element, 500)
+                        elif current_element == FIRE:
+                            grid[new_y][new_x] = create_cell(current_element, 300)
+                        else:
+                            grid[new_y][new_x] = create_cell(current_element)
 
     # RIGHT CLICK = ERASE
     if mouse_buttons[2]:

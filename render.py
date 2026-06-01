@@ -38,6 +38,25 @@ def apply_glow(color, glow_strength):
 
     return (r, g, b)
 
+def apply_temprature_tint(color, temperature):
+
+    # Normal Room Temp.
+
+    if temperature <= 20:
+        return color
+
+    # HEAT GLOW
+
+    heat= min(255, int((temperature - 20) * 2))
+    
+    r = min(255, color[0] + heat)
+    g = min(255, color[1] + heat // 3)
+    b = max(0, color[2] - heat // 2)
+    
+    return (r, g, b)
+
+
+
 def draw_grid(screen, grid, current_element, brush_size, simulation_speed):
 
     screen.fill((30, 30, 80))
@@ -85,6 +104,10 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed):
 
                 if near_fire and cell not in [FIRE, LAVA]:
                     color = apply_glow(color, 25)
+
+                
+                temprature= cell_data["temperature"]
+                color= apply_temprature_tint(color, temprature)
 
                 pygame.draw.rect(screen, color, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE))
     
