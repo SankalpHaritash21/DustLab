@@ -1,6 +1,7 @@
 import pygame
 
 from settings import *
+from cell import create_cell
 
 
 def handle_input(grid, current_element, brush_size, simulation_speed):
@@ -22,6 +23,14 @@ def handle_input(grid, current_element, brush_size, simulation_speed):
                 current_element = LAVA
             elif event.key == pygame.K_4:
                 current_element = OIL
+            elif event.key == pygame.K_5:
+                current_element = STONE
+            elif event.key == pygame.K_6:
+                current_element = FIRE
+            elif event.key == pygame.K_7:
+                current_element = SMOKE
+            elif event.key == pygame.K_8:
+                current_element = STEAM
 
             elif event.key == pygame.K_UP:
                 brush_size += 1
@@ -59,7 +68,7 @@ def handle_input(grid, current_element, brush_size, simulation_speed):
                         and 0 <= new_y < ROWS
                     ):
 
-                        grid[new_y][new_x] = current_element
+                        grid[new_y][new_x] = create_cell(current_element)
 
     # RIGHT CLICK = ERASE
     if mouse_buttons[2]:

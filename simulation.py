@@ -2,6 +2,7 @@ import random
 
 from settings import *
 from materials import materials
+from cell import create_cell
 
 
 def get_density(material_id):
@@ -16,15 +17,18 @@ def get_type(material_id):
     
     return materials[material_id]["type"]
 
+def get_material(cell):
 
+    if cell == 0:
+        return 0
+
+    return cell["material"]
 
 def update_simulation(grid):
 
     updated = set()
 
-    # -------------------
-    # SAND SIMULATION
-    # -------------------
+    # Powder SIMULATION
 
     for row in range(ROWS - 2, -1, -1):
 
@@ -32,9 +36,13 @@ def update_simulation(grid):
 
             if (row, col) in updated:
                 continue
-
             
-            cell = grid[row][col]
+            cell_data = grid[row][col]
+            if cell_data == 0:
+                continue
+
+            cell = get_material(cell_data)
+
             if get_type(cell) == "powder":
                 moved = False
 
@@ -44,19 +52,19 @@ def update_simulation(grid):
                 if below == 0:
 
                     grid[row][col] = 0
-                    grid[row + 1][col] = cell
+                    grid[row + 1][col] = cell_data
 
                     updated.add((row + 1, col))
                     moved = True
 
-                # density-based interaction: density swap
+                #! density-based interaction: density swap
                 elif below != 0:
                     current_density= get_density(cell)
-                    below_density = get_density(below)
+                    below_density = get_density(get_material(below))
 
                     if current_density > below_density:
                         grid[row][col] = below
-                        grid[row + 1][col] = cell
+                        grid[row + 1][col] = cell_data
 
                         updated.add((row + 1, col))
                         updated.add((row, col))
@@ -72,21 +80,19 @@ def update_simulation(grid):
 
                         if (
                             0 <= new_col < COLS
-                            and (grid[row + 1][new_col] == 0 or get_density(cell) > get_density(grid[row + 1][new_col]))
+                            and (grid[row + 1][new_col] == 0 or get_density(cell) > get_density(get_material(grid[row + 1][new_col])))
                         ):
 
                             target = grid[row + 1][new_col]
 
                             grid[row][col] = target
-                            grid[row + 1][new_col] = cell
+                            grid[row + 1][new_col] = cell_data
 
                             updated.add((row + 1, new_col))
                             updated.add((row, col))
                             break
 
-    # -------------------
-    # WATER SIMULATION
-    # -------------------
+    # liquid SIMULATION
 
     for row in range(ROWS - 2, -1, -1):
 
@@ -95,14 +101,38 @@ def update_simulation(grid):
             if (row, col) in updated:
                 continue
 
-            cell = grid[row][col]
+            cell_data = grid[row][col]
+            if cell_data == 0:
+                continue
+
+            cell = get_material(cell_data)
+
             if get_type(cell) == "liquid":
+                below = grid[row + 1][col]
+
+                # lava + water interaction
+                if {cell, get_material(below)} == {LAVA, WATER}:
+                    grid[row + 1][col]= create_cell(STONE)
+                    grid[row][col]= create_cell(STEAM)
+
+                    updated.add((row, col))
+                    updated.add((row + 1, col))
+                    continue
+                
+                # lava + oil interaction
+                if {cell, get_material(below)} == {LAVA, OIL}:
+                    grid[row][col]= create_cell(FIRE)
+                    grid[row + 1][col]= create_cell(FIRE)
+
+                    updated.add((row, col))
+                    updated.add((row + 1, col))
+                    continue
 
                 # fall downward
                 if grid[row + 1][col] == 0:
 
                     grid[row][col] = 0
-                    grid[row + 1][col] = cell
+                    grid[row + 1][col] = cell_data
 
                     updated.add((row + 1, col))
 
@@ -125,7 +155,7 @@ def update_simulation(grid):
                         ):
 
                             grid[row][col] = 0
-                            grid[row + 1][new_col] = cell
+                            grid[row + 1][new_col] = cell_data
 
                             updated.add((row + 1, new_col))
 
@@ -145,8 +175,97 @@ def update_simulation(grid):
                             ):
 
                                 grid[row][col] = 0
-                                grid[row][new_col] = cell
+                                grid[row][new_col] = cell_data
 
                                 updated.add((row, new_col))
 
                                 break
+    
+
+    # Gas SIMULATION
+
+    for row in range(ROWS):
+
+        for col in range(COLS):
+
+            cell_data = grid[row][col]
+            if cell_data == 0:
+                continue
+
+            cell = get_material(cell_data)
+
+            if (row, col) in updated:
+                    continue
+
+            if get_type(cell) == "gas":
+
+                if row == 0:
+                    grid[row][col] = 0
+                    continue
+
+                # fire spread
+                for dx in [-1 ,0, 1]:
+                    for dy in [-1, 0, 1]:
+
+                        nx = col + dx
+                        ny = row + dy
+
+                        if (0 <= ny < ROWS and 0 <= nx < COLS):
+
+                            neighbor_data = grid[ny][nx]
+                            if ( neighbor_data != 0 and get_material(neighbor_data) == OIL  and random.random() < 0.3):
+                                grid[ny][nx] = create_cell(FIRE, 200)
+                                updated.add((ny, nx))
+
+                # random death
+                if random.random() < 0.08:
+
+                    if cell == FIRE:
+                        # fire turns to smoke
+                        grid[row][col] = create_cell(SMOKE)
+
+                    else:
+                        # smoke dissapprears
+                        grid[row][col] = 0
+                        
+                    continue
+            
+
+                if cell == FIRE:
+                    directions = [-1, 0, 1]
+
+                elif cell == SMOKE:
+                    directions = [-2, -1, 0, 1, 2]
+
+                elif cell == STEAM:
+                    directions = [-2, -1, 0, 1, 2]
+
+                random.shuffle(directions)
+
+                moved= False
+
+                # rise upward
+                for direction in directions:
+
+                    new_col= col + direction
+
+                    if (0<=new_col< COLS and grid[row - 1][new_col] == 0):
+
+                        grid[row][col]= 0
+
+
+                        if cell == SMOKE and random.random() < 0.5:
+                            continue
+
+                        if cell == STEAM and random.random() < 0.5:
+                            continue
+
+                        target_row= row - 1
+                        grid[target_row][new_col]= cell_data
+
+                        updated.add((target_row, new_col))
+
+                        moved= True
+                        break
+
+                

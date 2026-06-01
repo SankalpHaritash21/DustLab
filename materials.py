@@ -24,9 +24,37 @@ materials = {
 
     OIL:{
         "name": "Oil",
-        "color": (92, 64, 51),
+        "color": (50, 40, 30),
         "density": 0.5,
         "type": "liquid"
+    },
+
+    STONE:{
+        "name": "Stone",
+        "color": (90, 90, 100),
+        "density": 4,
+        "type": "solid"
+    },
+
+    FIRE:{
+        "name": "Fire",
+        "color": (255, 140, 0),
+        "density": -1,
+        "type": "gas"
+    },
+
+    SMOKE:{
+        "name": "Smoke",
+        "color": (170, 170, 170),
+        "density": -0.5,
+        "type": "gas"
+    },
+
+    STEAM:{
+        "name": "Steam",
+        "color": (220, 220, 225),
+        "density": -0.3,
+        "type": "gas"
     }
 
 }
