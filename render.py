@@ -1,6 +1,7 @@
 import pygame
 
 from settings import *
+from materials import materials
 
 
 def draw_grid(screen, grid, current_element, brush_size, simulation_speed):
@@ -10,37 +11,12 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed):
     for row in range(ROWS):
 
         for col in range(COLS):
-
-            if grid[row][col] == SAND:
-
-                pygame.draw.rect(
-                    screen,
-                    WHITE,
-                    (
-                        col * CELL_SIZE,
-                        row * CELL_SIZE,
-                        CELL_SIZE,
-                        CELL_SIZE
-                    )
-                )
-
-            elif grid[row][col] == WATER:
-
-                pygame.draw.rect(
-                    screen,
-                    BLUE,
-                    (
-                        col * CELL_SIZE,
-                        row * CELL_SIZE,
-                        CELL_SIZE,
-                        CELL_SIZE
-                    )
-                )
+            cell= grid[row][col]
+            if cell != 0:
+                color = materials[cell]["color"]
+                pygame.draw.rect(screen, color, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE))
     
-    material_name = "SAND"
-
-    if current_element == WATER:
-        material_name = "WATER"
+    material_name= materials[current_element]["name"]
     
     hud_text = (f"Material: {material_name} "
                  f"Brush Size: {brush_size} "

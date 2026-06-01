@@ -1,6 +1,21 @@
 import random
 
 from settings import *
+from materials import materials
+
+
+def get_density(material_id):
+    if material_id == 0:
+        return -1
+    
+    return materials[material_id]["density"]
+
+def get_type(material_id):
+    if material_id == 0:
+        return None
+    
+    return materials[material_id]["type"]
+
 
 
 def update_simulation(grid):
@@ -18,7 +33,10 @@ def update_simulation(grid):
             if (row, col) in updated:
                 continue
 
-            if grid[row][col] == SAND:
+            
+            cell = grid[row][col]
+            if get_type(cell) == "powder":
+                moved = False
 
                 below = grid[row + 1][col]
 
@@ -26,37 +44,45 @@ def update_simulation(grid):
                 if below == 0:
 
                     grid[row][col] = 0
-                    grid[row + 1][col] = SAND
+                    grid[row + 1][col] = cell
 
                     updated.add((row + 1, col))
+                    moved = True
 
-                # sink through water
-                elif below == WATER:
+                # density-based interaction: density swap
+                elif below != 0:
+                    current_density= get_density(cell)
+                    below_density = get_density(below)
 
-                    grid[row][col] = WATER
-                    grid[row + 1][col] = SAND
+                    if current_density > below_density:
+                        grid[row][col] = below
+                        grid[row + 1][col] = cell
 
-                    updated.add((row + 1, col))
-                    updated.add((row, col))
-
-                else:
-
-                    direction = random.choice([-1, 1])
-
-                    new_col = col + direction
-
-                    if (
-                        0 <= new_col < COLS
-                        and grid[row + 1][new_col] in [0, WATER]
-                    ):
-
-                        target = grid[row + 1][new_col]
-
-                        grid[row][col] = target
-                        grid[row + 1][new_col] = SAND
-
-                        updated.add((row + 1, new_col))
+                        updated.add((row + 1, col))
                         updated.add((row, col))
+                        moved = True
+
+                if not moved:
+
+                    directions = [-1, 1]
+                    random.shuffle(directions)
+
+                    for direction in directions:
+                        new_col = col + direction
+
+                        if (
+                            0 <= new_col < COLS
+                            and (grid[row + 1][new_col] == 0 or get_density(cell) > get_density(grid[row + 1][new_col]))
+                        ):
+
+                            target = grid[row + 1][new_col]
+
+                            grid[row][col] = target
+                            grid[row + 1][new_col] = cell
+
+                            updated.add((row + 1, new_col))
+                            updated.add((row, col))
+                            break
 
     # -------------------
     # WATER SIMULATION
@@ -69,13 +95,14 @@ def update_simulation(grid):
             if (row, col) in updated:
                 continue
 
-            if grid[row][col] == WATER:
+            cell = grid[row][col]
+            if get_type(cell) == "liquid":
 
                 # fall downward
                 if grid[row + 1][col] == 0:
 
                     grid[row][col] = 0
-                    grid[row + 1][col] = WATER
+                    grid[row + 1][col] = cell
 
                     updated.add((row + 1, col))
 
@@ -98,7 +125,7 @@ def update_simulation(grid):
                         ):
 
                             grid[row][col] = 0
-                            grid[row + 1][new_col] = WATER
+                            grid[row + 1][new_col] = cell
 
                             updated.add((row + 1, new_col))
 
@@ -118,7 +145,7 @@ def update_simulation(grid):
                             ):
 
                                 grid[row][col] = 0
-                                grid[row][new_col] = WATER
+                                grid[row][new_col] = cell
 
                                 updated.add((row, new_col))
 

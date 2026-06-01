@@ -1,42 +1,41 @@
 **under progress**
 
-# Sandbox Game
+# Cellular Sandbox Engine
 
-A simple falling sand simulation built using Python and Pygame.
+A 2D cellular automata sandbox simulation built with Python and Pygame.
 
 ## Features
 
-- Sand physics
-- Water physics
-- Circular brush tool
-- Real-time particle simulation
-- Material switching using keyboard
-- Adjustable simulation speed
+- Falling sand simulation
+- Water fluid behavior
+- Density swapping
+- Brush painting system
+- Runtime controls
+- Modular engine structure
 
 ## Controls
 
-- Left Click → Place particles
-- Right Click → Erase particles
-- Key 1 → Sand
-- Key 2 → Water
+1 → Sand  
+2 → Water
 
-## Tech Used
+Left Click → Paint  
+Right Click → Erase
+
+UP / DOWN → Brush size  
+LEFT / RIGHT → Simulation speed
+
+## Tech
 
 - Python
 - Pygame
+- Cellular Automata
 
-## Future Improvements
+## Future Plans
 
-- Smoke particles
-- Fire simulation
-- Lava interactions
-- Better fluid dynamics
-- Optimized physics engine
-- Save/load worlds
-
-## Run
-
-```bash
-pip install -r requirements.txt
-python main.py
-```
+- Lava
+- Smoke
+- Fire
+- Steam
+- Optimization
+- Chunk systems
+- Procedural generation

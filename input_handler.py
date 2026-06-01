@@ -10,15 +10,18 @@ def handle_input(grid, current_element, brush_size, simulation_speed):
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
-            return False, current_element
+            return False, current_element, brush_size, simulation_speed
 
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_1:
                 current_element = SAND
-
             elif event.key == pygame.K_2:
                 current_element = WATER
+            elif event.key == pygame.K_3:
+                current_element = LAVA
+            elif event.key == pygame.K_4:
+                current_element = OIL
 
             elif event.key == pygame.K_UP:
                 brush_size += 1
