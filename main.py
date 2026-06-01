@@ -5,6 +5,7 @@ from render import draw_grid
 from simulation import update_simulation
 from input_handler import handle_input
 from temprature import update_temperature
+from reactions import update_reactions
 
 pygame.init()
 
@@ -43,7 +44,7 @@ while running:
     if frame_count % simulation_speed == 0:
         update_simulation(grid)
         update_temperature(grid)
-
+        update_reactions(grid)
     # RENDER
     draw_grid(screen, grid, current_element, brush_size, simulation_speed)
     pygame.display.update()

@@ -68,7 +68,7 @@ def handle_input(grid, current_element, brush_size, simulation_speed):
                         and 0 <= new_y < ROWS
                     ):
                         if current_element == LAVA:
-                            grid[new_y][new_x] = create_cell(current_element, 500)
+                            grid[new_y][new_x] = create_cell(current_element, 800)
                         elif current_element == FIRE:
                             grid[new_y][new_x] = create_cell(current_element, 300)
                         else:

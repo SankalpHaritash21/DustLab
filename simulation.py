@@ -62,7 +62,8 @@ def update_simulation(grid):
                     current_density= get_density(cell)
                     below_density = get_density(get_material(below))
 
-                    if current_density > below_density:
+
+                    if ( current_density > below_density):
                         grid[row][col] = below
                         grid[row + 1][col] = cell_data
 
@@ -110,23 +111,19 @@ def update_simulation(grid):
             if get_type(cell) == "liquid":
                 below = grid[row + 1][col]
 
-                # lava + water interaction
-                if {cell, get_material(below)} == {LAVA, WATER}:
-                    grid[row + 1][col]= create_cell(STONE)
-                    grid[row][col]= create_cell(STEAM)
+                if below != 0:
+                    current_density = get_density(cell)
+                    below_density = get_density(get_material(below))
 
-                    updated.add((row, col))
-                    updated.add((row + 1, col))
-                    continue
-                
-                # lava + oil interaction
-                if {cell, get_material(below)} == {LAVA, OIL}:
-                    grid[row][col]= create_cell(FIRE)
-                    grid[row + 1][col]= create_cell(FIRE)
+                    below_type = get_type(get_material(below))
 
-                    updated.add((row, col))
-                    updated.add((row + 1, col))
-                    continue
+                    if ( below_type in ["liquid", "gas"] and current_density > below_density):
+                        grid[row][col] = below
+                        grid[row + 1][col] = cell_data
+
+                        updated.add((row + 1, col))
+                        updated.add((row, col))
+                        continue
 
                 # fall downward
                 if grid[row + 1][col] == 0:
@@ -217,18 +214,26 @@ def update_simulation(grid):
                                 grid[ny][nx] = create_cell(FIRE, 200)
                                 updated.add((ny, nx))
 
-                # random death
-                if random.random() < 0.08:
+                # random FIRE death
+                if cell == FIRE:
+                    
+                    # fule burn
+                    cell_data["fuel"] -= 1
 
-                    if cell == FIRE:
-                        # fire turns to smoke
-                        grid[row][col] = create_cell(SMOKE)
+                    # emit heat while burning 
+                    cell_data["temperature"] += 2
+                    
+                    # fire dies when fuel exhausted
+                    if cell_data["fuel"] <= 0: 
+                        grid[row][col] = create_cell( SMOKE, cell_data["temperature"] )  
+                        continue
 
-                    else:
-                        # smoke dissapprears
+                
+                # SMOKE Lifetime
+                if cell == SMOKE:
+                    if random.random() < 0.02:
                         grid[row][col] = 0
-                        
-                    continue
+                        continue
             
 
                 if cell == FIRE:
