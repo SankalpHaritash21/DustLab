@@ -3,7 +3,7 @@ import random
 from settings import *
 from materials import materials
 from cell import create_cell
-from simulation_utils import get_density, get_type, get_material
+from simulation_utils import get_type, get_material, get_gas_pressure
 
 
 def update_gases(grid, updated):
@@ -23,6 +23,33 @@ def update_gases(grid, updated):
                     continue
 
             if get_type(cell) == "gas":
+
+                pressure = get_gas_pressure(grid, row, col)
+
+                # Pressure Wall Damage
+
+                if pressure >= 8:
+
+                    for dx, dy in [(0, -1), (0, 1), (-1, 0), (1,0)]:
+                        nx= col + dx
+                        ny= row + dy
+
+                        if not (0<= nx <COLS and 0<= ny <ROWS):
+                            continue
+
+                        neighbor= grid[ny][nx]
+
+                        if neighbor == 0:
+                            continue
+
+                        neighbor_material= get_material(neighbor)
+
+                        # Break Stone
+
+                        if (neighbor_material == STONE and random.random() < 0.02):
+                            
+                            grid[ny][nx] = 0
+                            updated.add((ny, nx))
 
                 if row == 0:
                     grid[row][col] = 0
@@ -139,14 +166,21 @@ def update_gases(grid, updated):
 
                         moved= True
                         break
+
+                # Pressure Burst
+
+                brust_strength= 1
+
+                if pressure >= 7:
+                    brust_strength= 3
                 
                 # Sideways movement
-                if not moved:
+                if not moved or pressure >= 5:
                     random.shuffle(directions)
 
                     for direction in directions:
 
-                        new_col= col + direction
+                        new_col= (col + direction * brust_strength)
 
                         if (0<=new_col< COLS and grid[row][new_col] == 0):
 

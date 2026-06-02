@@ -20,11 +20,7 @@ def update_reactions(grid):
 
 
 
-            # No reactions
-
-            if "reactions" not in material:
-                continue
-
+            # Check for reactions
             for dx, dy in [(0, -1), (0,1), (-1,0), (1,0)]:
 
                 nx, ny = col + dx, row + dy
@@ -41,7 +37,7 @@ def update_reactions(grid):
 
                 # check reaction rules
 
-                for reaction in material["reactions"]:
+                for reaction in material.get("reactions", []):
                     if (neighbor_material == reaction["with"]):
                         
                         # Temperature Check
@@ -98,3 +94,9 @@ def update_reactions(grid):
                         new_cell["fuel"] = material["fuel_value"]
 
                     grid[row][col] = new_cell
+
+            # Melting
+            if "melting_point" in material:
+                if temperature >= material["melting_point"]:
+
+                    grid[row][col] = 0

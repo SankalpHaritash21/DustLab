@@ -6,6 +6,7 @@ import time
 
 from settings import *
 from materials import materials
+from simulation_utils import get_gas_pressure
 
 
 def vary_color(color, variation, row, col):
@@ -163,8 +164,12 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_
 
             info_lines = [
                 f"Material: {material_name}",
-                f"Temperature: {int(cell_data['temperature'])}°C"
+                f"Temperature: {int(cell_data['temperature'])}°C",
             ]
+
+            if materials[material_id]["type"] == "gas":
+                pressure = get_gas_pressure(grid, y, x)
+                info_lines.append(f"Pressure: {pressure}")
 
             # Optional METADATA
 

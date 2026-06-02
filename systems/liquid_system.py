@@ -1,7 +1,7 @@
 import random
 
 from settings import *
-from simulation_utils import get_density, get_type, get_material
+from simulation_utils import get_density, get_type, get_material, get_liquid_pressure
 
 
 def update_liquids(grid, updated):
@@ -21,6 +21,10 @@ def update_liquids(grid, updated):
             cell = get_material(cell_data)
 
             if get_type(cell) == "liquid":
+
+                pressure = get_liquid_pressure(grid, row, col)
+
+
                 below = grid[row + 1][col]
 
                 if below != 0:
@@ -47,17 +51,23 @@ def update_liquids(grid, updated):
 
                 else:
 
-                    directions = [-1, 1]
-                    random.shuffle(directions)
+                    # Pressure-based flow
 
+                    if pressure >= 6:
+                        directions = [ -2, -1, 1, 2, ]
+
+                    else:
+                        directions = [-1, 1]
+
+                    random.shuffle(directions)
                     moved = False
 
                     # diagonal flow
                     for direction in directions:
 
-                        new_col = col + direction
+                       new_col = (col + direction)
 
-                        if (
+                       if (
                             0 <= new_col < COLS
                             and grid[row + 1][new_col] == 0
                             and grid[row][new_col] == 0
@@ -76,7 +86,7 @@ def update_liquids(grid, updated):
 
                         for direction in directions:
 
-                            new_col = col + direction
+                            new_col = (col + direction)
 
                             if (
                                 0 <= new_col < COLS

@@ -8,6 +8,9 @@ materials = {
         "type": "powder",
         "thermal_conductivity": 0.08,
         "specific_heat": 0.8,
+        "reactions":[
+            { "with": SAND, "min_temp": 700, "result_self": GLASS, "result_other": LAVA }
+        ]
     },
 
     WATER: {
@@ -29,7 +32,7 @@ materials = {
         "color": (255, 69, 0),
         "density": 3,
         "type": "liquid",
-        "thermal_conductivity": 0.08,
+        "thermal_conductivity": 2.0,
         "specific_heat": 8,
         "solidify_point": 400,
         "solidifies_into": STONE,
@@ -53,7 +56,9 @@ materials = {
         "density": 4,
         "type": "solid",
         "thermal_conductivity": 0.12,
-        "specific_heat": 1.0
+        "specific_heat": 0.3,
+        "melting_point": 600,
+
     },
 
     FIRE:{
@@ -87,6 +92,35 @@ materials = {
         "condensation_point": 40,
         "condenses_into": WATER,
         "buoyancy": 0.8
+    },
+
+    CRACKED_STONE: {
+        "name": "Cracked Stone",
+        "color": (60, 60, 60),
+        "density": 4,
+        "type": "solid",
+        "thermal_conductivity": 0.12,
+        "specific_heat": 1.0
+    },
+
+    GLASS: {
+        "name": "Glass",
+        "color": (100, 240, 255),
+        "density": 4,
+        "type": "solid",
+        "thermal_conductivity": 0.05,
+        "specific_heat": 0.2,
+    },
+
+    PLANT: {
+        "name": "Plant",
+        "color": (50, 180, 50),
+        "density": 1,
+        "type": "solid",
+        "thermal_conductivity": 0.05,
+        "specific_heat": 0.3,
+        "ignition_point": 80,
+        "ignites_into": FIRE,
     }
 
 }

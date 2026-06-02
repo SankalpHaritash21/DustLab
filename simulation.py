@@ -7,6 +7,7 @@ from systems.gas_system import update_gases
 from systems.liquid_system import update_liquids
 from systems.powder_system import update_powders
 from simulation_utils import get_density, get_type, get_material
+from systems.plant_system import update_plants
 
 def update_simulation(grid):
 
@@ -22,6 +23,11 @@ def update_simulation(grid):
 
     # gas SIMULATION
     update_gases(grid, updated)
+
+    # plant SIMULATION
+    update_plants(grid, updated)
+
+
     
 
    
