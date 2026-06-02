@@ -4,7 +4,7 @@ from settings import *
 from render import draw_grid
 from simulation import update_simulation
 from input_handler import handle_input
-from temprature import update_temperature
+from temperature import update_temperature
 from reactions import update_reactions
 
 pygame.init()
@@ -32,21 +32,29 @@ for row in range(ROWS):
 
     grid.append(current_row)
 
+show_temperature = False
 running = True
+paused = False
+step_frame = False
+selected_cell = None
 
 while running:
+
 
     clock.tick(60)
     frame_count += 1
 
-    (running, current_element, brush_size, simulation_speed )= handle_input(grid, current_element, brush_size, simulation_speed)
+    (running, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell )= handle_input(grid, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell)
 
-    if frame_count % simulation_speed == 0:
+    if (((not paused) and frame_count % simulation_speed == 0) or step_frame):
         update_simulation(grid)
-        update_temperature(grid)
+        for _ in range(3):
+            update_temperature(grid)
         update_reactions(grid)
+        step_frame = False
     # RENDER
-    draw_grid(screen, grid, current_element, brush_size, simulation_speed)
+
+    draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_temperature, selected_cell)
     pygame.display.update()
 
 pygame.quit()

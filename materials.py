@@ -7,7 +7,7 @@ materials = {
         "density": 2,
         "type": "powder",
         "thermal_conductivity": 0.08,
-        "specific_heat": 0.8
+        "specific_heat": 0.8,
     },
 
     WATER: {
@@ -16,7 +16,12 @@ materials = {
         "density": 1,
         "type": "liquid",
         "thermal_conductivity": 0.2,
-        "specific_heat": 4.0
+        "specific_heat": 4.0,
+        "boiling_point": 50,
+        "boils_into": STEAM,
+        "reactions":[
+            { "with": LAVA, "min_temp": 100, "result_self": STEAM, "result_other": STONE }
+        ]
     },
 
     LAVA:{
@@ -24,8 +29,10 @@ materials = {
         "color": (255, 69, 0),
         "density": 3,
         "type": "liquid",
-        "thermal_conductivity": 0.3,
-        "specific_heat": 1.5
+        "thermal_conductivity": 0.08,
+        "specific_heat": 8,
+        "solidify_point": 400,
+        "solidifies_into": STONE,
     },
 
     OIL:{
@@ -34,8 +41,11 @@ materials = {
         "density": 0.5,
         "type": "liquid",
         "thermal_conductivity": 0.12,
-        "specific_heat": 2.0
-    },
+        "specific_heat": 2.0,
+        "ignition_point": 100,
+        "ignites_into": FIRE,
+        "fuel_value": 200,
+   },
 
     STONE:{
         "name": "Stone",
@@ -52,7 +62,9 @@ materials = {
         "density": -1,
         "type": "gas",
         "thermal_conductivity": 0.4,
-        "specific_heat": 0.1
+        "specific_heat": 0.1,
+        "heat_output": 4,
+        "buoyancy": 1.0
     },
 
     SMOKE:{
@@ -61,7 +73,8 @@ materials = {
         "density": -0.5,
         "type": "gas",
         "thermal_conductivity": 0.03,
-        "specific_heat": 0.3
+        "specific_heat": 0.3,
+        "buoyancy": 0.6
     },
 
     STEAM:{
@@ -70,7 +83,10 @@ materials = {
         "density": -0.3,
         "type": "gas",
         "thermal_conductivity": 0.08,
-        "specific_heat": 1.5
+        "specific_heat": 1.5,
+        "condensation_point": 40,
+        "condenses_into": WATER,
+        "buoyancy": 0.8
     }
 
 }

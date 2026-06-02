@@ -70,6 +70,7 @@ def update_temperature(grid):
                 heat_transfer /= specific_heat
 
                 temp_changes[row][col] += heat_transfer
+                temp_changes[ny][nx] -= heat_transfer
 
     # APPLY TEMPERATURE CHANGES
     for row in range(ROWS):
@@ -82,6 +83,8 @@ def update_temperature(grid):
                 continue
 
             cell["temperature"] += temp_changes[row][col]
+
+            cell["temperature"] = max(-273, min(2000, cell["temperature"]))
 
             # AMBIENT COOLING
             AMBIENT_TEMP = 20

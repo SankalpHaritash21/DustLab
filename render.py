@@ -38,7 +38,7 @@ def apply_glow(color, glow_strength):
 
     return (r, g, b)
 
-def apply_temprature_tint(color, temperature):
+def apply_temperature_tint(color, temperature):
 
     # Normal Room Temp.
 
@@ -46,7 +46,9 @@ def apply_temprature_tint(color, temperature):
         return color
 
     # HEAT GLOW
-
+    if temperature == float("inf"):
+        temperature = 2000
+        
     heat= min(255, int((temperature - 20) * 2))
     
     r = min(255, color[0] + heat)
@@ -55,9 +57,28 @@ def apply_temprature_tint(color, temperature):
     
     return (r, g, b)
 
+def temperature_to_color(temperature):
+
+    # clamp
+    temperature = max(0, min(temperature, 1000))
+
+    # cold -> blue
+    if temperature < 100:
+        blue = 100 + int( temperature * 1.5)
+        blue = min(255, blue)
+        return (0, 0, blue)
+    
+    # warm -> yellow
+    elif temperature < 300:
+        return (255, 255, 0)
+    
+    # hot -> red
+    else:
+        return (255, 0, 0)
 
 
-def draw_grid(screen, grid, current_element, brush_size, simulation_speed):
+
+def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_temperature, selected_cell):
 
     screen.fill((30, 30, 80))
 
@@ -106,8 +127,15 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed):
                     color = apply_glow(color, 25)
 
                 
-                temprature= cell_data["temperature"]
-                color= apply_temprature_tint(color, temprature)
+                temperature= cell_data["temperature"]
+
+                # debug temperature view
+                if show_temperature:
+                    color = temperature_to_color(temperature)
+
+                # Normal Rendering
+                else:
+                    color= apply_temperature_tint(color, temperature)
 
                 pygame.draw.rect(screen, color, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE))
     
@@ -120,3 +148,63 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed):
 
     text_surface = pygame.font.SysFont("Arial", 18).render(hud_text, True, WHITE)
     screen.blit(text_surface, (10, 10))
+    draw_material_bar( screen, current_element)
+
+
+    # Particle Inspection
+    if selected_cell is not None:
+        x, y = selected_cell
+        cell_data = grid[y][x]
+
+        if cell_data != 0:
+            material_id = cell_data["material"]
+            material_name = materials[material_id]["name"]
+            
+
+            info_lines = [
+                f"Material: {material_name}",
+                f"Temperature: {int(cell_data['temperature'])}°C"
+            ]
+
+            # Optional METADATA
+
+            for key, value in cell_data.items():
+                if key not in ["material", "temperature"]:
+                    info_lines.append(f"{key.capitalize()}: {value}")
+
+            # Draw Panel
+
+            panel_x= 10
+            panel_y= 40
+
+            for index, line in enumerate(info_lines):
+                text_surface = pygame.font.SysFont("Arial", 18).render(line, True, WHITE)
+                screen.blit(text_surface, (panel_x, panel_y + index * 20))
+
+
+
+def draw_material_bar(screen, current_element):
+
+    bar_height = 50
+    y= HEIGHT - bar_height
+
+    material_width = WIDTH // len(materials)
+    font = pygame.font.SysFont("Arial", 16)
+
+    for index, material_id in enumerate(materials):
+        material = materials[material_id]
+        color = material["color"]
+
+        x= index * material_width
+
+        rect= pygame.Rect(x, y, material_width, bar_height)
+        pygame.draw.rect(screen, color, rect)
+
+        # Selected Material Border
+        if material_id == current_element:
+            pygame.draw.rect(screen, WHITE, rect, 4)
+
+        # Material Name
+        text_surface = font.render(material["name"], True, BLACK)
+        text_rect= text_surface.get_rect(center=rect.center)
+        screen.blit(text_surface, text_rect)
