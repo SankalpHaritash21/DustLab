@@ -46,7 +46,14 @@ def update_liquids(grid, updated):
                         continue
 
                 # fall downward
-                if (grid[row + 1][col] == 0 and not is_lava):
+
+                can_fall = True
+
+                if is_lava:
+                    can_fall = (random.random() < 0.25)
+
+
+                if ( can_fall and (grid[row + 1][col] == 0)):
 
                     grid[row][col] = 0
                     grid[row + 1][col] = cell_data
@@ -71,6 +78,7 @@ def update_liquids(grid, updated):
 
                     # diagonal flow
                     for direction in directions:
+                       
 
                        new_col = (col + direction)
 

@@ -78,8 +78,8 @@ def temperature_to_color(temperature):
         return (255, 0, 0)
 
 
-
 def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_temperature, selected_cell):
+
 
     screen.fill((30, 30, 80))
 
@@ -150,6 +150,7 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_
     text_surface = pygame.font.SysFont("Arial", 18).render(hud_text, True, WHITE)
     screen.blit(text_surface, (10, 10))
     draw_material_bar( screen, current_element)
+
 
 
     # Particle Inspection

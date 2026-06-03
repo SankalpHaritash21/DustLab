@@ -8,3 +8,5 @@ venv
 
 __pycache__/
 *.pyc
+
+world_save.json

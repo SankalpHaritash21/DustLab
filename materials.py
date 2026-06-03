@@ -20,11 +20,9 @@ materials = {
         "type": "liquid",
         "thermal_conductivity": 0.2,
         "specific_heat": 4.0,
-        "boiling_point": 50,
+        "boiling_point": 120,
         "boils_into": STEAM,
-        "reactions":[
-            { "with": LAVA, "min_temp": 100, "result_self": STEAM, "result_other": LAVA}
-        ]
+        
     },
 
     LAVA:{
@@ -32,7 +30,7 @@ materials = {
         "color": (255, 69, 0),
         "density": 3,
         "type": "liquid",
-        "thermal_conductivity": 2.0,
+        "thermal_conductivity": 0.25,
         "specific_heat": 8,
         "solidify_point": 400,
         "solidifies_into": STONE,
@@ -89,7 +87,7 @@ materials = {
         "type": "gas",
         "thermal_conductivity": 0.08,
         "specific_heat": 1.5,
-        "condensation_point": 40,
+        "condensation_point": 25,
         "condenses_into": WATER,
         "buoyancy": 0.8
     },

@@ -46,7 +46,7 @@ def update_gases(grid, updated):
 
                         # Break Stone
 
-                        if (neighbor_material == STONE and random.random() < 0.02):
+                        if (neighbor_material == STONE and random.random() < 0.005):
                             
                             grid[ny][nx] = 0
                             updated.add((ny, nx))
@@ -150,14 +150,14 @@ def update_gases(grid, updated):
 
                     if (0<=new_col< COLS and grid[row - 1][new_col] == 0):
 
-                        grid[row][col]= 0
-
-
                         if cell == SMOKE and random.random() < 0.5:
                             continue
 
                         if cell == STEAM and random.random() < 0.5:
                             continue
+
+
+                        grid[row][col]= 0
 
                         target_row= row - 1
                         grid[target_row][new_col]= cell_data
@@ -172,7 +172,7 @@ def update_gases(grid, updated):
                 burst_strength= 1
 
                 if pressure >= 7:
-                    burst_strength= 3
+                    burst_strength= 1
                 
                 # Sideways movement
                 if not moved or pressure >= 5:

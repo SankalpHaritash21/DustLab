@@ -37,6 +37,29 @@ def update_reactions(grid):
 
                 neighbor_material = get_material(neighbor_data)
 
+                # WATER + LAVA SPECIAL REACTION
+                if ( material_id == WATER and neighbor_material == LAVA ):
+                    
+                    #SOME WATER BECOMES STEAM
+                    
+                    if random.random() < 0.05:
+                        grid[row][col] = ( create_cell( STEAM, cell_data["temperature"] ) )
+                    
+                    else:
+                        
+                        # WATER DISAPPEARS
+                        grid[row][col] = 0
+                        
+                        # COOL THE LAVA
+                        neighbor_data["temperature"] -= 50
+                        
+                        # TURN LAVA INTO STONE IF COOL ENOUGH
+                        if neighbor_data["temperature"] <= 400:
+                            
+                            grid[ny][nx] = ( create_cell(STONE) )
+                            break
+
+
                 # check reaction rules
 
                 for reaction in material.get("reactions", []):
@@ -114,3 +137,5 @@ def update_reactions(grid):
                 if temperature >= material["melting_point"]:
 
                     grid[row][col] = 0
+
+

@@ -44,7 +44,7 @@ def generate_world(grid):
                     if ((dx ** 2 + dy ** 2) <= cave_radius ** 2):
                         grid[cave_y][cave_x] = 0
 
-            for reinforce_x in range( col - cave_radius, col + cave_radius + 1 ):
+            for reinforce_x in range( col - cave_radius - 2, col + cave_radius ):
                 for reinforce_y in range(cave_center - cave_radius -2, cave_center - cave_radius - 1):
                 
                     if ( 0 <= reinforce_x < COLS and 0 <= reinforce_y < ROWS ):
@@ -52,7 +52,7 @@ def generate_world(grid):
                             grid[ reinforce_y ][reinforce_x] = ( create_cell(STONE) )
 
             # Lava Caves Baseline
-            if random.random() < 0.3:
+            if random.random() < 0.1:
                     lava_y= (cave_center + cave_radius - 2)
 
                     for lava_dx in range(-cave_radius + 1, cave_radius):
@@ -69,8 +69,26 @@ def generate_world(grid):
                                     grid[lava_y + lava_dy + 1][lava_x] = create_cell(STONE)
 
 
-        # random Plants
+            # Underground Water Pockets
 
+            if random.random() < 0.12:
+
+                water_y= ( cave_center + cave_radius - 2 )
+
+                for water_dx in range(-cave_radius + 1, cave_radius):
+
+                    for water_dy in [0, 1, 2]:
+
+                        water_x = col + water_dx
+
+                        if (0 <= water_x < COLS and 0 <= water_y < ROWS):
+
+                            #  Only place water if no lava
+
+                            if ( 0 <= water_y + water_dy <ROWS and grid[water_y + water_dy][water_x] == 0):
+                                grid[water_y + water_dy][water_x] = create_cell(WATER)
+        
+        # random Plants
         if random.random() < 0.1:
             plant_row = terrain_height - 1
 

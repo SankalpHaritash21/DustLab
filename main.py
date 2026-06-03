@@ -10,6 +10,7 @@ from reactions import update_reactions
 from save_load import save_world, load_world
 
 from world_generation import generate_world
+import random
 
 pygame.init()
 
@@ -64,6 +65,15 @@ while running:
     (running, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell )= handle_input(grid, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell)
 
     if (((not paused) and frame_count % simulation_speed == 0) or step_frame):
+
+        # Random Rain
+
+        if random.random() < 0.05:
+            rain_col = random.randint(0, COLS - 1)
+
+            if grid[0][rain_col] == 0:
+                grid[0][rain_col] = create_cell(WATER)
+
         update_simulation(grid)
         for _ in range(3):
             update_temperature(grid)
