@@ -31,6 +31,12 @@ def update_temperature(grid):
 
             material = materials[material_id]
 
+            # Lava Maintain Internal Heat
+            if material_id == LAVA:
+
+                if cell["temperature"] < 1200:
+                    cell["temperature"] += 15
+
             cell_temp = cell["temperature"]
 
             conductivity = material["thermal_conductivity"]

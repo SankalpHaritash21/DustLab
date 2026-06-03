@@ -2,7 +2,7 @@ import random
 
 from settings import *
 from cell import create_cell
-from simulation_utils import get_material
+from simulation_utils import get_material, has_nearby_water
 
 def update_plants(grid, updated):
 
@@ -17,19 +17,6 @@ def update_plants(grid, updated):
            
            if ( get_material(cell) != PLANT):
                 continue
-           
-           # Support Check
-           
-           support_y= row + 1
-
-           if support_y < ROWS:
-               
-               support = grid[support_y][col]
-
-               if support == 0:
-                   grid[row][col] = 0
-                   updated.add((row, col))
-                   continue
                
            
 
@@ -38,10 +25,41 @@ def update_plants(grid, updated):
            if "age" not in cell:
                 cell["age"] = 0
 
-           cell["age"] += 1
+           near_water= has_nearby_water(grid, row, col)
+
            
+           if near_water:
+               cell["age"] += 0.2
+           else:
+                cell["age"] += 1
+
+
+           near_ash = False
+
+           for dx in [-1,0,1]:
+               for dy in [-1,0,1]:
+                   
+                   nx, ny = col + dx, row + dy
+
+                   if not (0 <= nx < COLS and 0 <= ny < ROWS):
+                       continue
+                   
+                   neighbor = grid[ny][nx]
+
+                   if neighbor == 0:
+                       continue
+                   
+                   if get_material(neighbor) == ASH:
+                        near_ash = True
+
            # Old Plant Dies
-           if cell["age"] > 500:
+
+           max_age = 500
+           
+           if near_water:
+            max_age = 2000
+
+           if cell["age"] > max_age:
                grid[row][col] = 0
                updated.add((row, col))
                continue
@@ -55,7 +73,7 @@ def update_plants(grid, updated):
                if not (0 <= nx < COLS and 0 <= ny < ROWS):
                    continue
                
-               if (grid[ny][nx] == 0 and random.random() < 0.001):
+               if (grid[ny][nx] == 0 and random.random() < (0.02 if near_water and near_ash else 0.01 if near_water else 0.0002)):
                    
                    new_plant = create_cell(PLANT)
                    new_plant["age"] = 0

@@ -22,6 +22,10 @@ def update_liquids(grid, updated):
 
             if get_type(cell) == "liquid":
 
+                is_lava= (cell == LAVA)
+
+
+
                 pressure = get_liquid_pressure(grid, row, col)
 
 
@@ -42,7 +46,7 @@ def update_liquids(grid, updated):
                         continue
 
                 # fall downward
-                if grid[row + 1][col] == 0:
+                if (grid[row + 1][col] == 0 and not is_lava):
 
                     grid[row][col] = 0
                     grid[row + 1][col] = cell_data
@@ -53,11 +57,14 @@ def update_liquids(grid, updated):
 
                     # Pressure-based flow
 
-                    if pressure >= 6:
-                        directions = [ -2, -1, 1, 2, ]
+                    if is_lava:
+                        directions = [-1, 1]
 
                     else:
-                        directions = [-1, 1]
+                        if pressure >= 6:
+                            directions = [ -2, -1, 1, 2, ]
+                        else:
+                            directions = [-1, 1]
 
                     random.shuffle(directions)
                     moved = False
@@ -82,7 +89,7 @@ def update_liquids(grid, updated):
                             break
 
                     # sideways flow
-                    if not moved and random.random() < 0.5:
+                    if not moved and random.random() < (0.01 if is_lava else 0.15):
 
                         for direction in directions:
 

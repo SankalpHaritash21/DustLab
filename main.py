@@ -1,11 +1,15 @@
+from cell import create_cell
 import pygame
-import random
 from settings import *
 from render import draw_grid
 from simulation import update_simulation
 from input_handler import handle_input
 from temperature import update_temperature
 from reactions import update_reactions
+
+from save_load import save_world, load_world
+
+from world_generation import generate_world
 
 pygame.init()
 
@@ -24,6 +28,7 @@ clock = pygame.time.Clock()
 
 grid=[]
 
+
 for row in range(ROWS):
     current_row= []
 
@@ -32,6 +37,16 @@ for row in range(ROWS):
 
     grid.append(current_row)
 
+# Generate World
+generate_world(grid)
+
+
+# Load World
+loaded_grid = load_world()
+
+if loaded_grid is not None:
+    grid = loaded_grid
+
 show_temperature = False
 running = True
 paused = False
@@ -39,6 +54,8 @@ step_frame = False
 selected_cell = None
 
 while running:
+    
+
 
 
     clock.tick(60)

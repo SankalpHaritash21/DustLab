@@ -9,7 +9,7 @@ materials = {
         "thermal_conductivity": 0.08,
         "specific_heat": 0.8,
         "reactions":[
-            { "with": SAND, "min_temp": 700, "result_self": GLASS, "result_other": LAVA }
+            { "with": FIRE, "min_temp": 700, "result_self": GLASS, "result_other": SAND }
         ]
     },
 
@@ -23,7 +23,7 @@ materials = {
         "boiling_point": 50,
         "boils_into": STEAM,
         "reactions":[
-            { "with": LAVA, "min_temp": 100, "result_self": STEAM, "result_other": STONE }
+            { "with": LAVA, "min_temp": 100, "result_self": STEAM, "result_other": LAVA}
         ]
     },
 
@@ -121,6 +121,14 @@ materials = {
         "specific_heat": 0.3,
         "ignition_point": 80,
         "ignites_into": FIRE,
+    },
+    ASH:{
+        "name": "Ash",
+        "color": (90, 90, 90),
+        "density": 2,
+        "type": "powder",
+        "thermal_conductivity": 0.1,
+        "specific_heat": 0.2,
     }
 
 }

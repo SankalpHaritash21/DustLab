@@ -1,3 +1,5 @@
+import random
+
 from settings import *
 from materials import materials
 from cell import create_cell
@@ -85,7 +87,19 @@ def update_reactions(grid):
             # Ignition
             if "ignition_point" in material:
                 if temperature >= material["ignition_point"]:
+
+                    # PLANT BURN to Ash
+
+                    if material_id == PLANT:
+                        if random.random() < 0.3:
+                            grid[row][col] = create_cell(ASH)
+                            continue
+
+
+
                     new_material = material["ignites_into"]
+
+
 
                     new_cell = create_cell(new_material, temperature)
 

@@ -75,3 +75,25 @@ def get_liquid_pressure(grid, row, col):
                 pressure += 1
         
     return pressure
+
+
+def has_nearby_water(grid, row, col):
+
+    for dx in [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]:
+        for dy in [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]:
+
+            nx, ny= col + dx, row + dy
+
+            if not (0 <= nx < COLS and 0 <= ny < ROWS):
+                continue
+
+            neighbor= grid[ny][nx]
+
+            if neighbor == 0:
+                continue
+
+
+            if (get_material(neighbor) == WATER):
+                return True
+
+    return False

@@ -169,10 +169,10 @@ def update_gases(grid, updated):
 
                 # Pressure Burst
 
-                brust_strength= 1
+                burst_strength= 1
 
                 if pressure >= 7:
-                    brust_strength= 3
+                    burst_strength= 3
                 
                 # Sideways movement
                 if not moved or pressure >= 5:
@@ -180,7 +180,7 @@ def update_gases(grid, updated):
 
                     for direction in directions:
 
-                        new_col= (col + direction * brust_strength)
+                        new_col= (col + direction * burst_strength)
 
                         if (0<=new_col< COLS and grid[row][new_col] == 0):
 

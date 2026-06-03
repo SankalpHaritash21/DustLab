@@ -1,8 +1,10 @@
 import pygame
 
+from save_load import load_world, save_world
 from settings import *
 from cell import create_cell
 from materials import materials
+
 
 
 def handle_input(grid, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell):
@@ -71,6 +73,18 @@ def handle_input(grid, current_element, brush_size, simulation_speed, show_tempe
                 simulation_speed = max(1, simulation_speed - 1)
             elif event.key == pygame.K_LEFT:
                 simulation_speed += 1
+
+            # Save World
+            elif event.key == pygame.K_s:
+                save_world(grid)
+            
+            # Load World
+            elif event.key == pygame.K_l:
+                loaded = load_world()
+
+                if loaded is not None:
+                    grid[:] = loaded
+
 
             # Clear Screen
             elif event.key == pygame.K_c:
@@ -148,6 +162,25 @@ def handle_input(grid, current_element, brush_size, simulation_speed, show_tempe
                             fire= create_cell(current_element, 300)
                             fire["lifetime"] = 80
                             grid[new_y][new_x] = fire
+                        
+                        elif current_element == PLANT:
+                            support_y= new_y + 1
+
+                            if support_y >= ROWS:
+                                continue
+
+                            support = grid[support_y][new_x]
+
+                            if support ==0:
+                                continue
+
+                            support_material = support["material"]
+
+                            if support_material not in [SAND, PLANT, STONE]:
+                                continue
+
+                            grid[new_y][new_x] = create_cell(current_element)
+                        
                         else:
                             grid[new_y][new_x] = create_cell(current_element)
 
