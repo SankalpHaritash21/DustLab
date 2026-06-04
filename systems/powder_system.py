@@ -50,22 +50,85 @@ def update_powders(grid, updated):
 
                 if not moved:
 
-                    directions = [-1, 1]
-                    random.shuffle(directions)
+                    slip_chance = 1.0
+                    unstable = False
+
+                    # wet terrain became unstable
+
+                    if "wetness" in cell_data:
+
+                        wetness = cell_data["wetness"]
+
+                        if wetness > 40:
+                            slip_chance = 0.55
+
+                            left_empty = (col > 0 and grid[row][col - 1] == 0)
+
+                            right_empty = (col < COLS - 1 and grid[row][col + 1] == 0)
+
+                            if left_empty or right_empty:
+                                unstable = True
+
+
+
+                    if random.random() < 0.5:
+
+                        directions = [-1, 1]
+
+                    else:
+
+                        directions = [1, -1]
+                    
+
+                    # Natural slop instability
+
+                    steep_slope = False
+
+                    if row + 1 < ROWS:
+
+                        left_drop = (
+                            col > 0
+                            and grid[row][col - 1] == 0
+                            and grid[row + 1][col - 1] == 0
+                        )
+
+                        right_drop = (
+                            col < COLS - 1
+                            and grid[row][col + 1] == 0
+                            and grid[row + 1][col + 1] == 0
+                        )
+
+                        if left_drop or right_drop:
+                            steep_slope = True
+
+                    # unstable wet terrain slide more
+
+                    if unstable or steep_slope:
+
+                        slip_chance = 0.35
+                        directions = [-1, 1, -1, 1]
 
                     for direction in directions:
                         new_col = col + direction
 
                         if (
+                            random.random() < slip_chance
+                            and
                             0 <= new_col < COLS
-                            and (grid[row + 1][new_col] == 0 or get_density(cell) > get_density(get_material(grid[row + 1][new_col])))
                         ):
 
-                            target = grid[row + 1][new_col]
+                            # normal diagonal fall
 
-                            grid[row][col] = target
-                            grid[row + 1][new_col] = cell_data
+                            if (
+                                grid[row + 1][new_col] == 0
+                            ):
 
-                            updated.add((row + 1, new_col))
-                            updated.add((row, col))
-                            break
+                                grid[row][col] = 0
+                                grid[row + 1][new_col] = cell_data
+
+                                updated.add((row + 1, new_col))
+                                updated.add((row, col))
+
+                                break
+
+                            

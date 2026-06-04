@@ -6,8 +6,7 @@ from cell import create_cell
 from materials import materials
 
 
-
-def handle_input(grid, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell):
+def handle_input(grid, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness):
 
 
     material_ids = list(materials.keys())
@@ -18,7 +17,7 @@ def handle_input(grid, current_element, brush_size, simulation_speed, show_tempe
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
-            return (False, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell)
+            return (False, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness)
         
 
         if event.type == pygame.KEYDOWN:
@@ -38,6 +37,10 @@ def handle_input(grid, current_element, brush_size, simulation_speed, show_tempe
             # Temperature View
             elif event.key == pygame.K_t:
                 show_temperature = (not show_temperature)
+
+
+            elif event.key == pygame.K_y:
+                show_wetness = (not show_wetness)
 
             # Pause/ Unpause
             elif event.key == pygame.K_SPACE:
@@ -204,4 +207,4 @@ def handle_input(grid, current_element, brush_size, simulation_speed, show_tempe
 
                         grid[new_y][new_x] = 0
 
-    return (True, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell)
+    return (True, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness)

@@ -78,7 +78,7 @@ def temperature_to_color(temperature):
         return (255, 0, 0)
 
 
-def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_temperature, selected_cell):
+def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_temperature, selected_cell, show_wetness):
 
 
     screen.fill((30, 30, 80))
@@ -133,6 +133,21 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_
                 # debug temperature view
                 if show_temperature:
                     color = temperature_to_color(temperature)
+
+                elif show_wetness:
+
+                    if "wetness" in cell_data:
+
+                        wetness = cell_data["wetness"]
+
+                        blue_strength=  int((wetness/100)* 255)
+
+                        color= (
+                            max(0, color[0] - blue_strength // 3),
+                            max(0, color[1] - blue_strength // 3),
+                            min(255, color[2] + blue_strength)
+                        )
+                    
 
                 # Normal Rendering
                 else:
