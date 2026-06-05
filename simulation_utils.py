@@ -97,3 +97,21 @@ def has_nearby_water(grid, row, col):
                 return True
 
     return False
+
+def get_local_weight(grid, row, col):
+    weight = 0
+    
+    # check few cells above
+    for check_y in range(max(0, row - 5), row):
+
+        above = grid[check_y][col]
+
+        if above == 0:
+            continue
+
+        material = get_material(above)
+
+        if get_type(material) == "powder":
+            weight += 1
+
+    return weight

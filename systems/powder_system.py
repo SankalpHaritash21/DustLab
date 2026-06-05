@@ -1,7 +1,8 @@
 import random
 
 from settings import *
-from simulation_utils import get_density, get_type, get_material
+from simulation_utils import get_density, get_type, get_material, get_local_weight
+
 
 
 def update_powders(grid, updated):
@@ -52,6 +53,7 @@ def update_powders(grid, updated):
 
                     slip_chance = 1.0
                     unstable = False
+                    steep_slope = False
 
                     # wet terrain became unstable
 
@@ -101,9 +103,10 @@ def update_powders(grid, updated):
                         if left_drop or right_drop:
                             steep_slope = True
 
+                    weight = get_local_weight(grid, row, col)
+                    
                     # unstable wet terrain slide more
-
-                    if unstable or steep_slope:
+                    if unstable or steep_slope or weight >= 3:
 
                         slip_chance = 0.35
                         directions = [-1, 1, -1, 1]

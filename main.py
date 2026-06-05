@@ -50,12 +50,13 @@ if loaded_grid is not None:
 
 show_temperature = False
 show_wetness = False
-
+show_stress = False
 
 running = True
 paused = False
 step_frame = False
 selected_cell = None
+
 
 while running:
     
@@ -65,7 +66,7 @@ while running:
     clock.tick(60)
     frame_count += 1
 
-    (running, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness )= handle_input(grid, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness)
+    (running, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness, show_stress )= handle_input(grid, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness, show_stress)
 
     if (((not paused) and frame_count % simulation_speed == 0) or step_frame):
 
@@ -84,7 +85,7 @@ while running:
         step_frame = False
     # RENDER
 
-    draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_temperature, selected_cell, show_wetness)
+    draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_temperature, selected_cell, show_wetness, show_stress)
     pygame.display.update()
 
 pygame.quit()

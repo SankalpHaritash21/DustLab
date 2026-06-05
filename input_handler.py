@@ -6,7 +6,7 @@ from cell import create_cell
 from materials import materials
 
 
-def handle_input(grid, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness):
+def handle_input(grid, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness, show_stress):
 
 
     material_ids = list(materials.keys())
@@ -17,7 +17,7 @@ def handle_input(grid, current_element, brush_size, simulation_speed, show_tempe
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
-            return (False, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness)
+            return (False, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness, show_stress)
         
 
         if event.type == pygame.KEYDOWN:
@@ -36,11 +36,27 @@ def handle_input(grid, current_element, brush_size, simulation_speed, show_tempe
 
             # Temperature View
             elif event.key == pygame.K_t:
-                show_temperature = (not show_temperature)
+                show_temperature = not show_temperature
+
+                if show_temperature:
+                    show_wetness = False
+                    show_stress = False
 
 
             elif event.key == pygame.K_y:
-                show_wetness = (not show_wetness)
+                show_wetness = not show_wetness
+
+                if show_wetness:
+                    show_temperature = False
+                    show_stress = False
+
+            # Stress View
+            elif event.key == pygame.K_u:
+                show_stress = not show_stress
+
+                if show_stress:
+                    show_temperature = False
+                    show_wetness = False
 
             # Pause/ Unpause
             elif event.key == pygame.K_SPACE:
@@ -207,4 +223,4 @@ def handle_input(grid, current_element, brush_size, simulation_speed, show_tempe
 
                         grid[new_y][new_x] = 0
 
-    return (True, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness)
+    return (True, current_element, brush_size, simulation_speed, show_temperature, paused, step_frame, selected_cell, show_wetness, show_stress)

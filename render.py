@@ -6,7 +6,7 @@ import time
 
 from settings import *
 from materials import materials
-from simulation_utils import get_gas_pressure
+from simulation_utils import get_gas_pressure, get_local_weight
 
 
 def vary_color(color, variation, row, col):
@@ -78,7 +78,7 @@ def temperature_to_color(temperature):
         return (255, 0, 0)
 
 
-def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_temperature, selected_cell, show_wetness):
+def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_temperature, selected_cell, show_wetness, show_stress):
 
 
     screen.fill((30, 30, 80))
@@ -147,6 +147,17 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_
                             max(0, color[1] - blue_strength // 3),
                             min(255, color[2] + blue_strength)
                         )
+                
+                elif show_stress:
+                    weight = get_local_weight(grid, row, col)
+
+                    stress_strength = min(255, weight * 50)
+
+                    color = (
+                        min(255, color[0] + stress_strength),
+                        max(0, color[1] - stress_strength // 2),
+                        max(0, color[2] - stress_strength // 2)
+                    )
                     
 
                 # Normal Rendering
