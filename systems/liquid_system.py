@@ -105,9 +105,7 @@ def update_liquids(grid, updated):
                     moved = False
 
                      # sediment deposition
-                    if (
-                        cell == WATER and "carrying_sand" in cell_data
-                    ):
+                    if (cell == WATER and "carrying_sand" in cell_data):
 
                         if random.random() < 0.02:
 
