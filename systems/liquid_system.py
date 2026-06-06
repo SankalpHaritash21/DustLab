@@ -2,7 +2,7 @@ import random
 
 from settings import *
 from simulation_utils import get_density, get_type, get_material, get_liquid_pressure
-
+from cell import create_cell
 
 def update_liquids(grid, updated):
     # liquid SIMULATION
@@ -58,6 +58,34 @@ def update_liquids(grid, updated):
                     grid[row][col] = 0
                     grid[row + 1][col] = cell_data
 
+                    # sediment transport
+
+                    if cell == WATER:
+
+                        for dx in [ -1, 1]:
+                            nx = col + dx
+
+                            if not (0 <= nx < COLS):
+                                continue
+
+                            neighbor = grid[row][nx]
+
+                            if neighbor == 0:
+                                continue
+
+                            neighbor_material = get_material(neighbor)
+
+                            # drag loose sand
+
+                            if neighbor_material == SAND:
+                                cell_data["carrying_sand"] = True
+
+                                grid[row][nx] = 0
+
+                                break
+
+
+
                     updated.add((row + 1, col))
 
                 else:
@@ -75,6 +103,32 @@ def update_liquids(grid, updated):
 
                     random.shuffle(directions)
                     moved = False
+
+                     # sediment deposition
+                    if (
+                        cell == WATER and "carrying_sand" in cell_data
+                    ):
+
+                        if random.random() < 0.02:
+
+                            below_y = row + 1
+
+                            if below_y < ROWS:
+
+                                # deposit only if ground exists below
+                                if grid[below_y][col] != 0:
+
+                                    grid[row][col] = create_cell(SAND)
+
+                                    del cell_data["carrying_sand"]
+
+                                    updated.add((row, col))
+
+                                    moved = True
+
+                    if moved:
+                        continue
+
 
                     # diagonal flow
                     for direction in directions:
@@ -95,7 +149,8 @@ def update_liquids(grid, updated):
 
                             moved = True
                             break
-
+                       
+                   
                     # sideways flow
                     if not moved and random.random() < (0.01 if is_lava else 0.15):
 

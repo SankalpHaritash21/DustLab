@@ -71,12 +71,13 @@ while running:
     if (((not paused) and frame_count % simulation_speed == 0) or step_frame):
 
         # Random Rain
+        if frame_count % 30 == 0:
 
-        if random.random() < 0.05:
-            rain_col = random.randint(0, COLS - 1)
+            if random.random() < 0.2:
+                rain_col = random.randint(0, COLS - 1)
 
-            if grid[0][rain_col] == 0:
-                grid[0][rain_col] = create_cell(WATER)
+                if grid[0][rain_col] == 0:
+                    grid[0][rain_col] = create_cell(WATER)
 
         update_simulation(grid)
         for _ in range(3):
