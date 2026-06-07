@@ -41,9 +41,13 @@ def update_liquids(grid, updated):
                         grid[row][col] = below
                         grid[row + 1][col] = cell_data
 
-                        updated.add((row + 1, col))
-                        updated.add((row, col))
-                        continue
+                        # downward movement resets directional momentum
+                        if "flow_dir" in cell_data:
+                            del cell_data["flow_dir"]
+
+                            updated.add((row + 1, col))
+                            updated.add((row, col))
+                            continue
 
                 # fall downward
 
@@ -57,6 +61,11 @@ def update_liquids(grid, updated):
 
                     grid[row][col] = 0
                     grid[row + 1][col] = cell_data
+
+
+                    # downward movement resets directional momentum
+                    if "flow_dir" in cell_data:
+                        del cell_data["flow_dir"]
 
                     # sediment transport
 
@@ -78,11 +87,10 @@ def update_liquids(grid, updated):
                             # drag loose sand
 
                             if neighbor_material == SAND:
-                                cell_data["carrying_sand"] = True
-
-                                grid[row][nx] = 0
-
-                                break
+                                if random.random() < 0.08:
+                                    cell_data["carrying_sand"] = True
+                                    grid[row][nx] = 0
+                                    break
 
 
 
@@ -101,7 +109,23 @@ def update_liquids(grid, updated):
                         else:
                             directions = [-1, 1]
 
-                    random.shuffle(directions)
+                    if cell == WATER and "flow_dir" in cell_data:
+
+                        preferred = cell_data["flow_dir"]
+
+                        directions = [preferred]
+
+                        if preferred == -1:
+                            directions.append(1)
+                        else:
+                            directions.append(-1)
+
+                    else:
+
+                        if random.random() < 0.5:
+                            directions = [-1, 1]
+                        else:
+                            directions = [1, -1]
                     moved = False
 
                      # sediment deposition
@@ -142,6 +166,7 @@ def update_liquids(grid, updated):
 
                             grid[row][col] = 0
                             grid[row + 1][new_col] = cell_data
+                            cell_data["flow_dir"] = direction
 
                             updated.add((row + 1, new_col))
 
@@ -163,6 +188,7 @@ def update_liquids(grid, updated):
 
                                 grid[row][col] = 0
                                 grid[row][new_col] = cell_data
+                                cell_data["flow_dir"]= direction
 
                                 updated.add((row, new_col))
 

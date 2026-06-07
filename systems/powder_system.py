@@ -104,12 +104,23 @@ def update_powders(grid, updated):
                             steep_slope = True
 
                     weight = get_local_weight(grid, row, col)
+
+                    # undercut collapse
+
+                    if row + 1 < ROWS:
+                        below_weight = (grid[row + 1][col] == 0)
+
+                        left_support = (col > 0 and grid[row][col - 1] != 0)
+                        right_support = (col < COLS - 1 and grid[row][col + 1] != 0)
+
+                        if below_weight and (left_support or right_support):
+                            unstable = True
                     
                     # unstable wet terrain slide more
                     if unstable or steep_slope or weight >= 3:
 
-                        slip_chance = 0.35
-                        directions = [-1, 1, -1, 1]
+                        directions = [-1, 1, -1, 1, -1, 1]
+                        slip_chance *= 1.8
 
                     for direction in directions:
                         new_col = col + direction
