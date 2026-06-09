@@ -10,6 +10,7 @@ from simulation_utils import get_density, get_type, get_material
 from systems.plant_system import update_plants
 from systems.wetness_system import update_wetness
 from systems.collapse_system import update_collapse
+from systems.spring_system import update_springs
 
 def update_simulation(grid):
 
@@ -18,6 +19,9 @@ def update_simulation(grid):
     
     # powder SIMULATION
     update_powders(grid, updated)
+
+    # spring SIMULATION
+    update_springs(grid)
 
     # liquid SIMULATION
     update_liquids(grid, updated)

@@ -45,9 +45,11 @@ def update_liquids(grid, updated):
                         if "flow_dir" in cell_data:
                             del cell_data["flow_dir"]
 
-                            updated.add((row + 1, col))
-                            updated.add((row, col))
-                            continue
+                        updated.add((row + 1, col))
+                        updated.add((row, col))
+
+
+                        continue
 
                 # fall downward
 
@@ -61,6 +63,25 @@ def update_liquids(grid, updated):
 
                     grid[row][col] = 0
                     grid[row + 1][col] = cell_data
+
+                    # waterfall splash mist
+
+                    if cell == WATER:
+
+                        if row > 0 and random.random() < 0.02:
+                            
+                            for dx in [-1, 0, 1]:
+
+                                nx = col + dx
+
+                                if 0 <= nx < COLS:
+
+                                    if grid[row][nx] == 0:
+
+                                        mist =  create_cell(SMOKE)
+                                        mist["lifetime"] = 5
+
+                                        grid[row][nx] = mist
 
 
                     # downward movement resets directional momentum

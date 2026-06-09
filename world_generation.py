@@ -51,6 +51,15 @@ def generate_world(grid):
                         if ( grid[reinforce_y][reinforce_x] != 0 ):
                             grid[ reinforce_y ][reinforce_x] = ( create_cell(STONE) )
 
+            # randome underground springs
+
+            if random.random() < 0.015:
+
+                spring_y = terrain_height + random.randint( 0, 2)
+
+                if spring_y < ROWS:
+                    grid[spring_y][col] = create_cell(SPRING)
+
             # Lava Caves Baseline
             if random.random() < 0.1:
                     lava_y= (cave_center + cave_radius - 2)

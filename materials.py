@@ -127,6 +127,14 @@ materials = {
         "type": "powder",
         "thermal_conductivity": 0.1,
         "specific_heat": 0.2,
-    }
+    },
+    SPRING: {
+    "name": "Spring",
+    "color": (80, 170, 255),
+    "density": 5,
+    "type": "solid",
+    "thermal_conductivity": 0.1,
+    "specific_heat": 1.0,
+},
 
 }
