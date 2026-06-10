@@ -11,6 +11,7 @@ from systems.plant_system import update_plants
 from systems.wetness_system import update_wetness
 from systems.collapse_system import update_collapse
 from systems.spring_system import update_springs
+from systems.moss_system import update_moss
 
 def update_simulation(grid):
 
@@ -28,6 +29,9 @@ def update_simulation(grid):
 
     # wetness SIMULATION
     update_wetness(grid)
+
+    # moss SIMULATION
+    update_moss(grid, updated)
 
     # collapse SIMULATION
     update_collapse(grid, updated)

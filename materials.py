@@ -135,6 +135,14 @@ materials = {
     "type": "solid",
     "thermal_conductivity": 0.1,
     "specific_heat": 1.0,
-},
+    },
+    MOSS: {
+        "name": "Moss",
+        "color": (40, 140, 40),
+        "density": 4,
+        "type": "solid",
+        "thermal_conductivity": 0.08,
+        "specific_heat": 1.2,
+    }
 
 }

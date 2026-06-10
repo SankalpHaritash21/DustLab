@@ -189,6 +189,33 @@ def update_liquids(grid, updated):
                             grid[row + 1][new_col] = cell_data
                             cell_data["flow_dir"] = direction
 
+                            # directional river errosion
+
+                            if cell == WATER:
+
+                                erosion_x = new_col + direction
+                                erosion_y = row
+
+                                if (
+                                    0 <= erosion_x < COLS
+                                    and 0 <= erosion_y < ROWS
+                                    
+                                ):
+
+                                    target = grid[erosion_y][erosion_x]
+
+                                    if target != 0:
+
+                                        target_material = get_material(target)
+
+                                        # flow water eodes looses terrain
+
+                                        if target_material == SAND:
+
+                                            if random.random() < 0.003:
+                                                grid[erosion_y][erosion_x] = 0
+                                
+
                             updated.add((row + 1, new_col))
 
                             moved = True
