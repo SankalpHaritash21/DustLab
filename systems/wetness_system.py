@@ -1,5 +1,7 @@
 from settings import *
 from simulation_utils import get_material
+import random
+from cell import create_cell
 
 def update_wetness(grid):
 
@@ -49,3 +51,17 @@ def update_wetness(grid):
 
             # Clamp values
             cell["wetness"] = max(0, min(100, cell["wetness"]))
+
+            # Ground water seepage
+
+            if cell["wetness"] > 70:
+
+                below_y = row + 1
+
+                if below_y < ROWS:
+
+                    if grid[below_y][col] == 0:
+
+                        if random.random() < 0.0005:
+                            grid[below_y][col] = create_cell(WATER)
+                        
