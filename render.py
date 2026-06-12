@@ -151,13 +151,14 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_
                 elif show_stress:
                     weight = get_local_weight(grid, row, col)
 
-                    stress_strength = min(255, weight * 50)
+                    if weight <= 1:
+                        color = (0, 255, 0)      # safe
 
-                    color = (
-                        min(255, color[0] + stress_strength),
-                        max(0, color[1] - stress_strength // 2),
-                        max(0, color[2] - stress_strength // 2)
-                    )
+                    elif weight <= 3:
+                        color = (255, 255, 0)    # stressed
+
+                    else:
+                        color = (255, 0, 0)      # dangerous
                     
 
                 # Normal Rendering

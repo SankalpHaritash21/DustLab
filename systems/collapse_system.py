@@ -3,6 +3,7 @@ import random
 from settings import *
 from cell import create_cell
 from simulation_utils import get_material
+from simulation_utils import get_local_weight
 
 
 def update_collapse(grid, updated):
@@ -68,6 +69,11 @@ def update_collapse(grid, updated):
                 crack_chance = 0.01
                 if near_cracked:
                     crack_chance = 0.05
+
+                weight = get_local_weight(grid, row, col)
+
+                if weight > 5:
+                    crack_chance *= 3
 
                 if material == STONE and random.random() < crack_chance:
                     grid[row][col] = create_cell(CRACKED_STONE)
