@@ -82,7 +82,32 @@ def update_collapse(grid, updated):
 
                 if material == CRACKED_STONE:
 
-                    if random.random() < 0.02:
+
+                    # crack progression
+
+                    for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
+
+                        nx= col + dx
+                        ny = row + dy
+
+                        if not (0 <= nx < COLS and 0 <= ny < ROWS):
+                            continue
+
+                        neighbor = grid[ny][nx]
+
+                        if neighbor == 0:
+                            continue
+
+                        if get_material(neighbor) == STONE:
+
+                            if random.random() < 0.005:
+                                grid[ny][nx] = create_cell(CRACKED_STONE)
+                                updated.add((ny, nx))
+
+
+                    # Collapse code
+
+                    if random.random() < 0.002:
                         if random.random() < 0.7:
                             grid[row][col] = create_cell(SAND)
 
