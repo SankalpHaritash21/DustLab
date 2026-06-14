@@ -195,6 +195,9 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_
                 f"Temperature: {int(cell_data['temperature'])}°C",
             ]
 
+            weight = get_local_weight(grid, y, x)
+            info_lines.append(f"Weight: {weight}")
+
             if materials[material_id]["type"] == "gas":
                 pressure = get_gas_pressure(grid, y, x)
                 info_lines.append(f"Pressure: {pressure}")
