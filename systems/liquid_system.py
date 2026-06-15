@@ -189,6 +189,9 @@ def update_liquids(grid, updated):
                             grid[row + 1][new_col] = cell_data
                             cell_data["flow_dir"] = direction
 
+                            if pressure >= 6:
+                                cell_data["foam"] = 20
+
                             # directional river errosion
 
                             if cell == WATER:
@@ -237,6 +240,9 @@ def update_liquids(grid, updated):
                                 grid[row][col] = 0
                                 grid[row][new_col] = cell_data
                                 cell_data["flow_dir"]= direction
+
+                                if pressure >= 6:
+                                    cell_data["foam"] = 20
 
                                 updated.add((row, new_col))
 

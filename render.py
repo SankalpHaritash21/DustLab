@@ -121,6 +121,14 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_
                 elif cell == STEAM:
                     color = vary_color(base_color, 5, row, col)
 
+                elif cell == WATER:
+                    color = base_color
+
+                    if "foam" in cell_data:
+
+                        if cell_data["foam"] > 0:
+
+                            color = (220, 220, 255)
                 else:
                     color = base_color
 
