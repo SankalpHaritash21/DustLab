@@ -77,7 +77,6 @@ def generate_world(grid):
                                 if lava_y + lava_dy + 1 < ROWS:
                                     grid[lava_y + lava_dy + 1][lava_x] = create_cell(STONE)
 
-
             # Underground Water Pockets
 
             if random.random() < 0.12:
@@ -96,10 +95,44 @@ def generate_world(grid):
 
                             if ( 0 <= water_y + water_dy <ROWS and grid[water_y + water_dy][water_x] == 0):
                                 grid[water_y + water_dy][water_x] = create_cell(WATER)
-        
+
+
         # random Plants
         if random.random() < 0.1:
             plant_row = terrain_height - 1
 
             if plant_row >= 0:
                 grid[plant_row][col] = create_cell(PLANT)
+
+    # Ore Veins
+
+    for _ in range(40):
+
+        ore_col = random.randint(0, COLS - 1)
+        ore_row = random.randint( ROWS // 2 + 8, ROWS - 2)
+
+        r = random.random()
+
+        if r < 0.55:
+            ore_type = COAL
+        elif r < 0.85:
+            ore_type = IRON
+        else:
+            ore_type = COPPER
+            
+        vein_size = random.randint(3, 8)
+
+        for _ in range(vein_size):
+
+            dx = random.randint(-2, 2)
+            dy = random.randint(-2, 2)
+
+            nx = ore_col + dx
+            ny = ore_row + dy
+
+            if not (0 <= nx < COLS and 0 <= ny < ROWS):
+                continue
+
+            if grid[ny][nx] != 0:
+                if grid[ny][nx]["material"] == STONE:
+                    grid[ny][nx] = create_cell(ore_type)

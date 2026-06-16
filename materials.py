@@ -143,6 +143,33 @@ materials = {
         "type": "solid",
         "thermal_conductivity": 0.08,
         "specific_heat": 1.2,
+    },
+    COAL : {
+        "name": "Coal",
+        "color": (40, 40, 40),
+        "density": 5,
+        "type": "solid",
+        "thermal_conductivity": 0.08,
+        "specific_heat": 0.4,
+
+    },
+
+    IRON : {
+        "name": "Iron",
+        "color": (180, 120, 80),
+        "density": 8,
+        "type": "solid",
+        "thermal_conductivity": 0.5,
+        "specific_heat": 0.45,
+    },
+
+    COPPER : {
+        "name": "Copper",
+        "color": (200, 110, 60),
+        "density": 7,
+        "type": "solid",
+        "thermal_conductivity": 0.7,
+        "specific_heat": 0.4,
     }
 
 }
