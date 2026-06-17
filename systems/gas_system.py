@@ -123,6 +123,15 @@ def update_gases(grid, updated):
                         grid[row][col] = 0
                         updated.add((row, col))
                         continue
+
+                # temporary Mist Lifetime
+                if cell == STEAM and "lifetime" in cell_data:
+                    cell_data["lifetime"] -= 1
+
+                    if cell_data["lifetime"] <= 0:
+                        grid[row][col] = 0
+                        updated.add((row, col))
+                        continue
             
 
                 buoyancy = materials[cell]["buoyancy"]

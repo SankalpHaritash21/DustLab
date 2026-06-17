@@ -10,7 +10,7 @@ def create_cell(material, temperature=20):
     }
 
     # Wetness metadata
-    if material in [SAND, STONE, ASH]:
+    if material in [SAND, STONE, ASH, MOSS]:
         cell["wetness"] = 0
 
     # Fire METADATA

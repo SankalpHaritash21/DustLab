@@ -114,4 +114,7 @@ def get_local_weight(grid, row, col):
         if get_type(material) == "powder":
             weight += 1
 
+        elif get_type(material) == "solid":
+            weight += 1
+
     return weight

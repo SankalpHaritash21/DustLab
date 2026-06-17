@@ -60,9 +60,5 @@ def update_wetness(grid):
 
                 if below_y < ROWS and grid[below_y][col] == 0:
 
-                    if random.random() < 0.0005:
+                    if random.random() < 0.0007:
                         grid[below_y][col] = create_cell(WATER)
-
-                    elif random.random() < 0.0002:
-                        grid[below_y][col] = create_cell(WATER)
-                        

@@ -76,9 +76,9 @@ def update_liquids(grid, updated):
 
                                 if 0 <= nx < COLS:
 
-                                    if grid[row][nx] == 0:
+                                    if grid[row][nx] == 0 and grid[row - 1][nx] == 0:
 
-                                        mist =  create_cell(SMOKE)
+                                        mist =  create_cell(STEAM)
                                         mist["lifetime"] = 5
 
                                         grid[row][nx] = mist
@@ -190,7 +190,7 @@ def update_liquids(grid, updated):
                             cell_data["flow_dir"] = direction
 
                             if pressure >= 6:
-                                cell_data["foam"] = 20
+                                cell_data["foam"] = min(40, cell_data.get("foam", 0) + 10)
 
                             # directional river errosion
 
@@ -215,7 +215,7 @@ def update_liquids(grid, updated):
 
                                         if target_material == SAND:
 
-                                            if random.random() < 0.003:
+                                            if random.random() < 0.02:
                                                 grid[erosion_y][erosion_x] = 0
                                 
 
@@ -242,7 +242,7 @@ def update_liquids(grid, updated):
                                 cell_data["flow_dir"]= direction
 
                                 if pressure >= 6:
-                                    cell_data["foam"] = 20
+                                    cell_data["foam"] = min(40, cell_data.get("foam", 0) + 10)
 
                                 updated.add((row, new_col))
 

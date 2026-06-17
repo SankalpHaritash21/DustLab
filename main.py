@@ -60,9 +60,6 @@ selected_cell = None
 
 while running:
     
-
-
-
     clock.tick(60)
     frame_count += 1
 
