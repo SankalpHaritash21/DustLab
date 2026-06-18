@@ -18,4 +18,7 @@ def create_cell(material, temperature=20):
     if material == FIRE:
         cell["fuel"] = 100
 
+    if material == WATER:
+        cell["sediment"] = 0
+
     return cell

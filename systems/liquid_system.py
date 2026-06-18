@@ -108,10 +108,13 @@ def update_liquids(grid, updated):
                             # drag loose sand
 
                             if neighbor_material == SAND:
-                                if random.random() < 0.08:
-                                    cell_data["carrying_sand"] = True
-                                    grid[row][nx] = 0
-                                    break
+
+                                if cell_data["sediment"] < 5:
+                                    
+                                    if random.random() < 0.08:
+                                        cell_data["sediment"] += 1
+                                        grid[row][nx] = 0
+                                        break
 
 
 
@@ -150,24 +153,36 @@ def update_liquids(grid, updated):
                     moved = False
 
                      # sediment deposition
-                    if (cell == WATER and "carrying_sand" in cell_data):
+                    if (cell == WATER and cell_data.get("sediment", 0) > 0 and pressure <= 2):
 
-                        if random.random() < 0.02:
+                        if random.random() < 0.005:
 
                             below_y = row + 1
 
                             if below_y < ROWS:
 
+                                # try to place sand above ground
+
+                                deposit_y = row
+
                                 # deposit only if ground exists below
-                                if grid[below_y][col] != 0:
+                                if grid[deposit_y][col] == cell_data:
 
-                                    grid[row][col] = create_cell(SAND)
+                                    for dx in [-1, 1]:
 
-                                    del cell_data["carrying_sand"]
+                                        nx = col + dx
 
-                                    updated.add((row, col))
+                                        if 0 <= nx < COLS and grid[row][nx] == 0:
 
-                                    moved = True
+                                            grid[row][nx] = create_cell(SAND)
+
+                                            cell_data["sediment"] -= 1
+
+                                            updated.add((row, nx))
+
+                                            moved = True
+                                            break
+
 
                     if moved:
                         continue
@@ -217,6 +232,9 @@ def update_liquids(grid, updated):
 
                                             if random.random() < 0.02:
                                                 grid[erosion_y][erosion_x] = 0
+
+                                                if cell_data["sediment"] < 5:
+                                                    cell_data["sediment"] += 1
                                 
 
                             updated.add((row + 1, new_col))
