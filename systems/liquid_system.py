@@ -109,7 +109,9 @@ def update_liquids(grid, updated):
 
                             if neighbor_material == SAND:
 
-                                if cell_data["sediment"] < 5:
+                                capacity = get_sediment_capacity(pressure)
+
+                                if cell_data["sediment"] < capacity:
                                     
                                     if random.random() < 0.08:
                                         cell_data["sediment"] += 1
