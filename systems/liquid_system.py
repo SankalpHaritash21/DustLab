@@ -1,7 +1,7 @@
 import random
 
 from settings import *
-from simulation_utils import get_density, get_type, get_material, get_liquid_pressure
+from simulation_utils import get_density, get_type, get_material, get_liquid_pressure, get_sediment_capacity
 from cell import create_cell
 
 def update_liquids(grid, updated):
@@ -233,7 +233,9 @@ def update_liquids(grid, updated):
                                             if random.random() < 0.02:
                                                 grid[erosion_y][erosion_x] = 0
 
-                                                if cell_data["sediment"] < 5:
+                                                capacity = get_sediment_capacity(pressure)
+
+                                                if cell_data["sediment"] < capacity:
                                                     cell_data["sediment"] += 1
                                 
 

@@ -115,6 +115,18 @@ def get_local_weight(grid, row, col):
             weight += 1
 
         elif get_type(material) == "solid":
-            weight += 1
+            weight += 2
 
     return weight
+
+
+def get_sediment_capacity(pressure):
+
+    if pressure <= 1:
+        return 1
+
+    elif pressure <= 3:
+        return 3
+
+    else:
+        return 5
