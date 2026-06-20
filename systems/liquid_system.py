@@ -20,6 +20,10 @@ def update_liquids(grid, updated):
 
             cell = get_material(cell_data)
 
+            if cell == WATER:
+
+                cell_data["velocity"] = max(0, cell_data.get("velocity", 0) - 0.02)
+
             if get_type(cell) == "liquid":
 
                 is_lava= (cell == LAVA)
@@ -63,6 +67,8 @@ def update_liquids(grid, updated):
 
                     grid[row][col] = 0
                     grid[row + 1][col] = cell_data
+
+                    cell_data["velocity"] = min(10, cell_data.get("velocity", 0) + 1)
 
                     # waterfall splash mist
 
@@ -155,7 +161,7 @@ def update_liquids(grid, updated):
                     moved = False
 
                      # sediment deposition
-                    if (cell == WATER and cell_data.get("sediment", 0) > 0 and pressure <= 2):
+                    if (cell == WATER and cell_data.get("sediment", 0) > 0 and pressure <= 2 and cell_data.get("velocity", 0) < 2):
 
                         if random.random() < 0.005:
 
@@ -204,6 +210,8 @@ def update_liquids(grid, updated):
 
                             grid[row][col] = 0
                             grid[row + 1][new_col] = cell_data
+
+                            cell_data["velocity"] = min(10, cell_data.get("velocity", 0) + 1)
                             cell_data["flow_dir"] = direction
 
                             if pressure >= 6:
@@ -213,32 +221,35 @@ def update_liquids(grid, updated):
 
                             if cell == WATER:
 
-                                erosion_x = new_col + direction
-                                erosion_y = row
+                                erosion_targets = [
+                                    (new_col + direction, row),
+                                    (new_col + direction, row + 1),
+                                    (new_col + direction, row - 1),
+                                ]
 
-                                if (
-                                    0 <= erosion_x < COLS
-                                    and 0 <= erosion_y < ROWS
-                                    
-                                ):
+                                for erosion_x, erosion_y in erosion_targets:
+
+                                    if not (0 <= erosion_x < COLS and 0 <= erosion_y < ROWS):
+                                        continue
 
                                     target = grid[erosion_y][erosion_x]
 
-                                    if target != 0:
+                                    if target == 0:
+                                        continue
 
-                                        target_material = get_material(target)
+                                    if get_material(target) != SAND:
+                                        continue
 
-                                        # flow water eodes looses terrain
+                                    velocity = cell_data.get("velocity", 0)
 
-                                        if target_material == SAND:
+                                    erosion_chance = 0.001 + (pressure * 0.002) + (velocity * 0.001)
 
-                                            if random.random() < 0.02:
-                                                grid[erosion_y][erosion_x] = 0
+                                    if random.random() < erosion_chance:
+                                        grid[erosion_y][erosion_x] = 0
+                                        capacity = get_sediment_capacity(pressure)
 
-                                                capacity = get_sediment_capacity(pressure)
-
-                                                if cell_data["sediment"] < capacity:
-                                                    cell_data["sediment"] += 1
+                                        if cell_data["sediment"] < capacity:
+                                            cell_data["sediment"] += 1
                                 
 
                             updated.add((row + 1, new_col))
@@ -261,6 +272,8 @@ def update_liquids(grid, updated):
 
                                 grid[row][col] = 0
                                 grid[row][new_col] = cell_data
+
+                                cell_data["velocity"] = max(1, cell_data.get("velocity", 0))
                                 cell_data["flow_dir"]= direction
 
                                 if pressure >= 6:
