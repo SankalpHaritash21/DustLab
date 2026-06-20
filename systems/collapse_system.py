@@ -66,17 +66,20 @@ def update_collapse(grid, updated):
                         near_cracked = True
                         break
                 
-                crack_chance = 0.01
-                if near_cracked:
-                    crack_chance = 0.05
-
                 weight = get_local_weight(grid, row, col)
+                crack_chance = 0.002
 
-                if weight > 5:
-                    crack_chance *= 3
+
+                if near_cracked:
+                    crack_chance += 0.01
+
+                crack_chance += weight * 0.005
 
                 if material == STONE and random.random() < crack_chance:
-                    grid[row][col] = create_cell(CRACKED_STONE)
+                    cracked = create_cell(CRACKED_STONE)
+                    cracked["stress"] = weight
+                    
+                    grid[row][col] = cracked
                     
                     updated.add((row, col))
 
@@ -100,14 +103,22 @@ def update_collapse(grid, updated):
 
                         if get_material(neighbor) == STONE:
 
-                            if random.random() < 0.005:
-                                grid[ny][nx] = create_cell(CRACKED_STONE)
+                            spread_chance = 0.002 + weight * 0.001
+
+                            if random.random() < spread_chance:
+                                new_cracked = create_cell(CRACKED_STONE)
+                                new_cracked["stress"] = weight
+                                grid[ny][nx] = new_cracked
+
+
                                 updated.add((ny, nx))
 
 
                     # Collapse code
 
-                    if random.random() < 0.002:
+                    collapse_chance = 0.0002 + weight * 0.0005
+
+                    if random.random() < collapse_chance:
                         if random.random() < 0.7:
                             grid[row][col] = create_cell(SAND)
 
