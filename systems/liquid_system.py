@@ -45,6 +45,10 @@ def update_liquids(grid, updated):
                         grid[row][col] = below
                         grid[row + 1][col] = cell_data
 
+                        if cell == WATER:
+
+                            cell_data["velocity"] = min(10, cell_data.get("velocity", 0) + 0.5)
+
                         # downward movement resets directional momentum
                         if "flow_dir" in cell_data:
                             del cell_data["flow_dir"]
@@ -127,6 +131,7 @@ def update_liquids(grid, updated):
 
 
                     updated.add((row + 1, col))
+                    updated.add((row, col))
 
                 else:
 
@@ -176,12 +181,34 @@ def update_liquids(grid, updated):
                                 # deposit only if ground exists below
                                 if grid[deposit_y][col] == cell_data:
 
-                                    for dx in [-1, 1]:
+                                    flow_dir = cell_data.get("flow_dir", 0)
+
+                                    deposit_order = []
+
+                                    # fallback side
+
+                                    if flow_dir == -1:
+                                        deposit_order = [1, -1]
+                                    elif flow_dir == 1:
+                                        deposit_order = [-1, 1]
+                                    else:
+                                        deposit_order = [-1, 1]
+
+                                    for dx in deposit_order:
 
                                         nx = col + dx
 
-                                        if 0 <= nx < COLS and grid[row][nx] == 0:
+                                        if not (0 <= nx < COLS):
+                                            continue
 
+                                        # need  solid support underneath
+
+                                        if (
+                                            grid[row][nx] == 0 and
+                                            row + 1 < ROWS and
+                                            grid[row + 1][nx] != 0 
+                                        ):
+                                            
                                             grid[row][nx] = create_cell(SAND)
 
                                             cell_data["sediment"] -= 1
@@ -190,7 +217,6 @@ def update_liquids(grid, updated):
 
                                             moved = True
                                             break
-
 
                     if moved:
                         continue
@@ -242,7 +268,12 @@ def update_liquids(grid, updated):
 
                                     velocity = cell_data.get("velocity", 0)
 
-                                    erosion_chance = 0.001 + (pressure * 0.002) + (velocity * 0.001)
+                                    erosion_chance = 0.001 + (pressure * 0.002) + (velocity * 0.003)
+
+                                    # Persistent flow cuts stronger
+
+                                    if abs(cell_data.get("flow_dir", 0)) == 1:
+                                        erosion_chance *= 1.2
 
                                     if random.random() < erosion_chance:
                                         grid[erosion_y][erosion_x] = 0
@@ -253,6 +284,7 @@ def update_liquids(grid, updated):
                                 
 
                             updated.add((row + 1, new_col))
+                            updated.add((row, col))
 
                             moved = True
                             break
@@ -280,5 +312,6 @@ def update_liquids(grid, updated):
                                     cell_data["foam"] = min(40, cell_data.get("foam", 0) + 10)
 
                                 updated.add((row, new_col))
+                                updated.add((row, col))
 
                                 break
