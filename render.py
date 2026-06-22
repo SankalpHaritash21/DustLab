@@ -106,6 +106,18 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_
                 if cell == SAND:
                     color = vary_color(base_color, 20, row, col)
 
+                    if "wetness" in cell_data:
+                        wetness = cell_data["wetness"]
+
+                        # Darken wet sand
+                        darkness = int(wetness * 0.8)
+
+                        color = (
+                            max(0, color[0] - darkness),
+                            max(0, color[1] - darkness),
+                            max(0, color[2] - darkness)
+                        )
+
                 elif cell == STONE:
                     color = vary_color(base_color, 15, row, col)
 
