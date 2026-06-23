@@ -136,11 +136,26 @@ def draw_grid(screen, grid, current_element, brush_size, simulation_speed, show_
                 elif cell == WATER:
                     color = base_color
 
-                    if "foam" in cell_data:
+                    foam = cell_data.get("foam", 0)
 
-                        if cell_data["foam"] > 0:
+                    if foam > 0:
 
-                            color = (220, 220, 255)
+                        intensity = min(255, 180 + foam * 2 )
+
+                        color = (intensity, intensity, 255)
+
+                    sediment = cell_data.get("sediment", 0)
+
+                    if sediment > 0:
+
+                        muddy = min(80, sediment * 12)
+
+                        color = (
+                            max(0, color[0] - muddy),
+                            max(0, color[1] - muddy // 2),
+                            color[2]
+                        )
+
                 else:
                     color = base_color
 

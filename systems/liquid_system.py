@@ -308,7 +308,7 @@ def update_liquids(grid, updated):
                                 cell_data["velocity"] = max(1, cell_data.get("velocity", 0))
                                 cell_data["flow_dir"]= direction
 
-                                if pressure >= 6:
+                                if pressure >= 6 or cell_data.get("velocity", 0) >= 5:
                                     cell_data["foam"] = min(40, cell_data.get("foam", 0) + 10)
 
                                 updated.add((row, new_col))
