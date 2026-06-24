@@ -130,3 +130,25 @@ def get_sediment_capacity(pressure):
 
     else:
         return 5
+
+def count_adjacent_sand(grid, row, col):
+
+    count = 0
+
+    for dx in [-1, 0, 1]:
+        for dy in [-1, 0, 1]:
+
+            if dx==0 and dy==0:
+                continue
+
+            nx, ny= col + dx, row + dy
+
+            if not (0 <= nx < COLS and 0 <= ny < ROWS):
+                continue
+
+            neighbor= grid[ny][nx]
+
+            if neighbor != 0 and get_material(neighbor) == SAND:
+                count += 1
+
+    return count

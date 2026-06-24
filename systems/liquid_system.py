@@ -1,7 +1,7 @@
 import random
 
 from settings import *
-from simulation_utils import get_density, get_type, get_material, get_liquid_pressure, get_sediment_capacity
+from simulation_utils import get_density, get_type, get_material, get_liquid_pressure, get_sediment_capacity, count_adjacent_sand
 from cell import create_cell
 
 def update_liquids(grid, updated):
@@ -167,8 +167,12 @@ def update_liquids(grid, updated):
 
                      # sediment deposition
                     if (cell == WATER and cell_data.get("sediment", 0) > 0 and pressure <= 2 and cell_data.get("velocity", 0) < 2):
+                        
 
-                        if random.random() < 0.005:
+                        bank_factor = count_adjacent_sand(grid, row, col)
+                        deposit_chance = 0.002 + (bank_factor * 0.003)
+
+                        if random.random() < deposit_chance:
 
                             below_y = row + 1
 
