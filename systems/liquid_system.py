@@ -76,22 +76,22 @@ def update_liquids(grid, updated):
 
                     # waterfall splash mist
 
-                    if cell == WATER:
+                    # if cell == WATER:
 
-                        if row > 0 and random.random() < 0.02:
+                    #     if row > 0 and random.random() < 0.02:
                             
-                            for dx in [-1, 0, 1]:
+                    #         for dx in [-1, 0, 1]:
 
-                                nx = col + dx
+                    #             nx = col + dx
 
-                                if 0 <= nx < COLS:
+                    #             if 0 <= nx < COLS:
 
-                                    if grid[row][nx] == 0 and grid[row - 1][nx] == 0:
+                    #                 if grid[row][nx] == 0 and grid[row - 1][nx] == 0:
 
-                                        mist =  create_cell(STEAM)
-                                        mist["lifetime"] = 5
+                    #                     mist =  create_cell(STEAM)
+                    #                     mist["lifetime"] = 5
 
-                                        grid[row][nx] = mist
+                    #                     grid[row][nx] = mist
 
 
                     # downward movement resets directional momentum

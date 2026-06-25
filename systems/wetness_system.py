@@ -44,6 +44,32 @@ def update_wetness(grid):
             if near_water:
                 cell["wetness"] += 2
 
+            # Moisture diffusion
+
+            if cell["wetness"] > 20:
+
+                for dx in [-1, 1]:
+
+                    nx = col + dx
+
+                    if not (0 <= nx < COLS):
+                        continue
+
+                    neighbor = grid[row][nx]
+
+                    if neighbor == 0:
+                        continue
+
+                    if "wetness" not in neighbor:
+                        continue
+
+                    moisture_diffusion = (cell["wetness"] - neighbor["wetness"])
+
+                    if moisture_diffusion > 10:
+                        transfer = moisture_diffusion * 0.05
+                        cell["wetness"] -= transfer
+                        neighbor["wetness"] += transfer
+
             # Dry out slowly
             else:
 
