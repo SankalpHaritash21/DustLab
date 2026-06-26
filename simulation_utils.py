@@ -152,3 +152,26 @@ def count_adjacent_sand(grid, row, col):
                 count += 1
 
     return count
+
+
+def count_nearby_plants(grid, row, col, radius=3):
+
+    count = 0
+
+    for dx in range(-radius, radius + 1):
+        for dy in range(-radius, radius + 1):
+
+                nx, ny= col + dx, row + dy
+
+                if not (0 <= nx < COLS and 0 <= ny < ROWS):
+                    continue
+
+                neighbor= grid[ny][nx]
+
+                if neighbor == 0:
+                    continue
+
+                if get_material(neighbor) == PLANT:
+                    count += 1
+
+    return count

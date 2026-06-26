@@ -2,7 +2,7 @@ import random
 
 from settings import *
 from cell import create_cell
-from simulation_utils import get_material, has_nearby_water
+from simulation_utils import get_material, has_nearby_water, count_nearby_plants
 
 def update_plants(grid, updated):
 
@@ -17,15 +17,37 @@ def update_plants(grid, updated):
            
            if ( get_material(cell) != PLANT):
                 continue
-               
            
+
+           # plant must have support below
+           support_y= row + 1
+
+           if support_y >= ROWS:
+               continue
+           
+           support= grid[support_y][col]
+
+           if support == 0:
+               
+               grid[row][col] = 0
+               updated.add((row, col))
+               continue
+           
+           support_material= get_material(support)
+
+           if support_material not in [SAND, STONE]:
+               
+               grid[row][col] = 0
+               updated.add((row, col))
+               continue
 
            # Plant Growth Logic
 
            if "age" not in cell:
                 cell["age"] = 0
 
-           near_water= has_nearby_water(grid, row, col)
+           near_water = has_nearby_water(grid, row, col)
+           nearby_plants = count_nearby_plants(grid, row, col)
 
            
            if near_water:
@@ -64,6 +86,11 @@ def update_plants(grid, updated):
                updated.add((row, col))
                continue
            
+           # Overcrowding check
+
+           if nearby_plants > 12:
+               continue
+
            # Random Growth
 
            for dx, dy in [(0, -1)]:
@@ -92,7 +119,7 @@ def update_plants(grid, updated):
                    
                    support_material = get_material(support)
 
-                   if support_material not in [ SAND, STONE, PLANT]:
+                   if support_material not in [ SAND, STONE]:
                        continue
                    
                    grid[ny][nx] = new_plant
