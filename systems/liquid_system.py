@@ -20,9 +20,35 @@ def update_liquids(grid, updated):
 
             cell = get_material(cell_data)
 
+            # Surface evaporation for water
+
             if cell == WATER:
 
-                cell_data["velocity"] = max(0, cell_data.get("velocity", 0) - 0.02)
+                # only near surface
+
+                if row < ROWS // 5:
+
+                    evaporation_chance = 0.0005
+
+                    # hot water eveporates faster
+
+                    if cell_data["temperature"] > 50:
+                        evaporation_chance *= 5
+
+                    if random.random() < evaporation_chance:
+
+                        steam = create_cell(STEAM)
+                        steam["lifetime"] = 80
+
+                        steam["temperature"] = max(100,cell_data["temperature"])
+
+                        grid[row][col] = steam
+                        updated.add((row, col))
+                        continue
+
+            if cell == WATER:
+
+                cell_data["velocity"] = max(0, cell_data.get("velocity", 0) - 0.05)
 
             if get_type(cell) == "liquid":
 
@@ -273,6 +299,14 @@ def update_liquids(grid, updated):
                                     velocity = cell_data.get("velocity", 0)
 
                                     erosion_chance = 0.001 + (pressure * 0.002) + (velocity * 0.003)
+
+                                    # wet sand resists erosion
+
+                                    if "wetness" in target:
+
+                                        wetness = target["wetness"]
+
+                                        erosion_chance *= max(0.2, 1 - wetness / 100)
 
                                     # Persistent flow cuts stronger
 
