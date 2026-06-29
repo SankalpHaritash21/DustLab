@@ -49,6 +49,15 @@ def update_plants(grid, updated):
            near_water = has_nearby_water(grid, row, col)
            nearby_plants = count_nearby_plants(grid, row, col)
 
+           # serve overcrouding kills plants
+
+           if nearby_plants > 18:
+               if random.random() < 0.01:
+                   
+                   grid[row][col] = 0
+                   updated.add((row, col))
+                   continue
+
            
            if near_water:
                cell["age"] += 0.2
@@ -88,7 +97,7 @@ def update_plants(grid, updated):
            
            # Overcrowding check
 
-           if nearby_plants > 12:
+           if nearby_plants > 8:
                continue
 
            # Random Growth
@@ -100,7 +109,13 @@ def update_plants(grid, updated):
                if not (0 <= nx < COLS and 0 <= ny < ROWS):
                    continue
                
-               if (grid[ny][nx] == 0 and random.random() < (0.02 if near_water and near_ash else 0.01 if near_water else 0.0002)):
+               growth_chance = (
+                    0.005 if near_water and near_ash
+                    else 0.002 if near_water
+                    else 0.0002
+                )
+               
+               if (grid[ny][nx] == 0 and random.random() < growth_chance):
                    
                    new_plant = create_cell(PLANT)
                    new_plant["age"] = 0
