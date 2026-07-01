@@ -316,11 +316,24 @@ def update_liquids(grid, updated):
                                         erosion_chance *= 1.2
 
                                     if random.random() < erosion_chance:
-                                        grid[erosion_y][erosion_x] = 0
-                                        capacity = get_sediment_capacity(pressure)
 
-                                        if cell_data["sediment"] < capacity:
-                                            cell_data["sediment"] += 1
+                                        above_y = erosion_y - 1
+
+                                        # If sand exists above, undercut first.
+                                        if (
+                                            above_y >= 0
+                                            and grid[above_y][erosion_x] != 0
+                                            and get_material(grid[above_y][erosion_x]) == SAND
+                                        ):
+                                            grid[erosion_y][erosion_x] = 0
+
+                                        else:
+                                            grid[erosion_y][erosion_x] = 0
+
+                                            capacity = get_sediment_capacity(pressure)
+
+                                            if cell_data["sediment"] < capacity:
+                                                cell_data["sediment"] += 1
                                 
 
                             updated.add((row + 1, new_col))
