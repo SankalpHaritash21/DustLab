@@ -298,9 +298,24 @@ def update_liquids(grid, updated):
                                     if get_material(target) != SAND:
                                         continue
 
+
+                                    # support sand is harder to erode
+
+                                    support = 0
+
+                                    for check_y in range( erosion_y + 1, min(ROWS, erosion_y + 3)):
+
+                                        if grid[check_y][erosion_x] != 0:
+
+                                            support += 1
+
                                     velocity = cell_data.get("velocity", 0)
 
                                     erosion_chance = 0.001 + (pressure * 0.002) + (velocity * 0.003)
+
+                                    # Dense support make erosion harder
+
+                                    erosion_chance /= (1 + support)
 
                                     # wet sand resists erosion
 
