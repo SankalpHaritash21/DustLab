@@ -187,10 +187,10 @@ def update_liquids(grid, updated):
 
                     else:
 
-                        if random.random() < 0.5:
-                            directions = [-1, 1]
-                        else:
-                            directions = [1, -1]
+                        bias = cell_data.get("river_bias", 1)
+                        directions = [bias, -bias]
+
+
                     moved = False
 
                      # sediment deposition
@@ -271,6 +271,11 @@ def update_liquids(grid, updated):
 
                             cell_data["velocity"] = min(10, cell_data.get("velocity", 0) + 1)
                             cell_data["flow_dir"] = direction
+
+                            # Occasionally change preferred river direction
+
+                            if random.random() < 0.002:
+                                cell_data["river_bias"] *= -1 
 
                             if pressure >= 6:
                                 cell_data["foam"] = min(40, cell_data.get("foam", 0) + 10)

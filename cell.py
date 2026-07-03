@@ -1,5 +1,6 @@
 
 from settings import *
+import random
 
 
 def create_cell(material, temperature=20):
@@ -21,5 +22,6 @@ def create_cell(material, temperature=20):
     if material == WATER:
         cell["sediment"] = 0
         cell["velocity"] = 0
+        cell["river_bias"] = random.choice([-1, 1])
 
     return cell
