@@ -337,23 +337,32 @@ def update_liquids(grid, updated):
 
                                     if random.random() < erosion_chance:
 
-                                        above_y = erosion_y - 1
+                                        # Remove support sand
+                                        grid[erosion_y][erosion_x] = 0
 
-                                        # If sand exists above, undercut first.
-                                        if (
-                                            above_y >= 0
-                                            and grid[above_y][erosion_x] != 0
-                                            and get_material(grid[above_y][erosion_x]) == SAND
-                                        ):
-                                            grid[erosion_y][erosion_x] = 0
+                                        # Small chance to destabilize adjacent sand
 
-                                        else:
-                                            grid[erosion_y][erosion_x] = 0
+                                        for dx in [-1, 1]:
+                                            nx = erosion_x + dx
 
-                                            capacity = get_sediment_capacity(pressure)
+                                            if 0 <= nx < COLS:
+                                                neighbor = grid[erosion_y][nx]
 
-                                            if cell_data["sediment"] < capacity:
-                                                cell_data["sediment"] += 1
+                                                if (
+                                                    neighbor != 0
+                                                    and get_material(neighbor) == SAND
+                                                    and random.random() < 0.15
+                                                ):
+                                                    
+                                                    updated.add((erosion_y, nx))
+
+                                        # Carry the removed material
+                                        capacity = get_sediment_capacity(pressure)
+
+                                        if cell_data["sediment"] < capacity:
+                                            cell_data["sediment"] += 1
+
+                                        updated.add((erosion_y, erosion_x))
                                 
 
                             updated.add((row + 1, new_col))
