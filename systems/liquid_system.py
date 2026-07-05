@@ -244,6 +244,10 @@ def update_liquids(grid, updated):
                                             grid[row][nx] = create_cell(SAND)
 
                                             cell_data["sediment"] -= 1
+                                            
+                                            # water loses energy while dropping sediment
+
+                                            cell_data["velocity"] = max(0, cell_data["velocity"] - 1)
 
                                             updated.add((row, nx))
 
@@ -361,6 +365,11 @@ def update_liquids(grid, updated):
 
                                         if cell_data["sediment"] < capacity:
                                             cell_data["sediment"] += 1
+                                            
+
+                                            # Cutting terrain slows water slightly
+
+                                            cell_data["velocity"] = max(0, cell_data["velocity"] - 1)
 
                                         updated.add((erosion_y, erosion_x))
                                 
@@ -373,27 +382,36 @@ def update_liquids(grid, updated):
                        
                    
                     # sideways flow
-                    if not moved and random.random() < (0.01 if is_lava else 0.15):
 
-                        for direction in directions:
+                    sideways_chance = 0.15
 
-                            new_col = (col + direction)
+                    if cell == WATER:
 
-                            if (
-                                0 <= new_col < COLS
-                                and grid[row][new_col] == 0
-                            ):
+                        sideways_chance += cell_data.get("velocity", 0) * 0.03
 
-                                grid[row][col] = 0
-                                grid[row][new_col] = cell_data
+                        sideways_chance = min(0.6, sideways_chance)
 
-                                cell_data["velocity"] = max(1, cell_data.get("velocity", 0))
-                                cell_data["flow_dir"]= direction
+                        if not moved and random.random() < (0.01 if is_lava else sideways_chance):
 
-                                if pressure >= 6 or cell_data.get("velocity", 0) >= 5:
-                                    cell_data["foam"] = min(40, cell_data.get("foam", 0) + 10)
+                            for direction in directions:
 
-                                updated.add((row, new_col))
-                                updated.add((row, col))
+                                new_col = (col + direction)
 
-                                break
+                                if (
+                                    0 <= new_col < COLS
+                                    and grid[row][new_col] == 0
+                                ):
+
+                                    grid[row][col] = 0
+                                    grid[row][new_col] = cell_data
+
+                                    cell_data["velocity"] = max(1, cell_data.get("velocity", 0))
+                                    cell_data["flow_dir"]= direction
+
+                                    if pressure >= 6 or cell_data.get("velocity", 0) >= 5:
+                                        cell_data["foam"] = min(40, cell_data.get("foam", 0) + 10)
+
+                                    updated.add((row, new_col))
+                                    updated.add((row, col))
+
+                                    break
