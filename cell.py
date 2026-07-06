@@ -14,6 +14,9 @@ def create_cell(material, temperature=20):
     if material in [SAND, STONE, ASH, MOSS]:
         cell["wetness"] = 0
 
+    if material == SAND:
+        cell["bank_damage"] = 0
+
     # Fire METADATA
 
     if material == FIRE:

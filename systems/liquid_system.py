@@ -289,9 +289,16 @@ def update_liquids(grid, updated):
                             if cell == WATER:
 
                                 erosion_targets = [
+                                    # front wall
+                                    (new_col + direction, row - 1),
                                     (new_col + direction, row),
                                     (new_col + direction, row + 1),
-                                    (new_col + direction, row - 1),
+
+                                    # slightly ahead
+
+                                    (new_col + 2 * direction, row),
+                                    (new_col + 2 * direction, row - 1),
+                                    (new_col + 2 * direction, row + 1),
                                 ]
 
                                 for erosion_x, erosion_y in erosion_targets:
@@ -391,7 +398,7 @@ def update_liquids(grid, updated):
 
                         sideways_chance = min(0.6, sideways_chance)
 
-                        if not moved and random.random() < (0.01 if is_lava else sideways_chance):
+                        if not moved and random.random() < ( 0.01 if is_lava else sideways_chance ):
 
                             for direction in directions:
 
@@ -405,7 +412,7 @@ def update_liquids(grid, updated):
                                     grid[row][col] = 0
                                     grid[row][new_col] = cell_data
 
-                                    cell_data["velocity"] = max(1, cell_data.get("velocity", 0))
+                                    cell_data["velocity"] = max( 0.5, cell_data.get("velocity", 0))
                                     cell_data["flow_dir"]= direction
 
                                     if pressure >= 6 or cell_data.get("velocity", 0) >= 5:
